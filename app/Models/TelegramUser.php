@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\TelegramUser
@@ -35,6 +36,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUsername($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\invitations> $invitations
+ * @property-read int|null $invitations_count
  * @mixin \Eloquent
  */
 class TelegramUser extends Model
@@ -43,4 +46,9 @@ class TelegramUser extends Model
 
     protected $table = 'telegram_users';
     protected $guarded = false;
+
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(invitations::class);
+    }
 }
