@@ -1,5 +1,6 @@
 <?php
 
+use App\Telegram\Command\CreateInviteCommand;
 use App\Telegram\Command\StartCommand;
 use Telegram\Bot\Commands\HelpCommand;
 
@@ -38,6 +39,7 @@ return [
             'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
             'commands' => [
                 StartCommand::class,
+                CreateInviteCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
         ],
