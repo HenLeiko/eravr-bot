@@ -64,7 +64,7 @@ class WebhookController extends Controller
                 $invite->setCode();
                 break;
             case 'add_cert_value':
-                $certificate->setValue();
+                is_numeric($this->botsManager->bot()->getWebhookUpdate()->message->text) ? $certificate->setValue() : $certificate->getException();
                 break;
             case 'set_cert_code':
                 $certificate->setCode();

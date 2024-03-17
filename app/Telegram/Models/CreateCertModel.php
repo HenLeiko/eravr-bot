@@ -83,4 +83,15 @@ class CreateCertModel
             ->savePNG(__DIR__ . '/../storage/' . $imageName . '.png');
         return $imageName;
     }
+
+    /**
+     * @throws TelegramSDKException
+     */
+    public function getException()
+    {
+        $this->botsManager->bot()->sendMessage([
+            'chat_id' => $this->webhookUpdate->message->chat->id,
+            'text' => 'Введёное значение должно быть числом без каких-либо символов!'
+        ]);
+    }
 }
