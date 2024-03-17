@@ -1,5 +1,6 @@
 <?php
 
+use App\Telegram\Command\CreateCertCommand;
 use App\Telegram\Command\CreateInviteCommand;
 use App\Telegram\Command\StartCommand;
 use Telegram\Bot\Commands\HelpCommand;
@@ -40,6 +41,7 @@ return [
             'commands' => [
                 StartCommand::class,
                 CreateInviteCommand::class,
+                CreateCertCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
         ],
