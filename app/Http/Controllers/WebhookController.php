@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,6 +33,7 @@ class WebhookController extends Controller
         $user = DB::table('telegram_users')->where('user_id', '=', $userId)->first();
         $this->botsManager->bot()->commandsHandler(true);
         $invite = new CreateInviteModel($this->botsManager);
+        $certificate = new CreateCertModel($this->botsManager);
 
         // dialog command handler
         switch ($request['message']['text']) {
@@ -60,6 +62,12 @@ class WebhookController extends Controller
                 break;
             case 'add_invite_code':
                 $invite->setCode();
+                break;
+            case 'add_cert_value':
+                $certificate->setValue();
+                break;
+            case 'set_cert_code':
+                $certificate->setCode();
                 break;
 
         }
