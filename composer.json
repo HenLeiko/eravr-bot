@@ -12,7 +12,8 @@
         "laravel/breeze": "^1.29",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "spatie/laravel-google-calendar": "^3.8"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.15",
