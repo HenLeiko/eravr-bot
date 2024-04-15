@@ -1,7 +1,9 @@
 <?php
 
+use App\Telegram\Command\CountEventCommand;
 use App\Telegram\Command\CreateCertCommand;
 use App\Telegram\Command\CreateInviteCommand;
+use App\Telegram\Command\CreatePassCommand;
 use App\Telegram\Command\StartCommand;
 use Telegram\Bot\Commands\HelpCommand;
 
@@ -42,6 +44,8 @@ return [
                 StartCommand::class,
                 CreateInviteCommand::class,
                 CreateCertCommand::class,
+                CreatePassCommand::class,
+                CountEventCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
         ],

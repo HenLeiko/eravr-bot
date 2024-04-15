@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Telegram\Models\CountEventModel;
 use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
 use Illuminate\Http\Request;
@@ -34,6 +35,7 @@ class WebhookController extends Controller
         $this->botsManager->bot()->commandsHandler(true);
         $invite = new CreateInviteModel($this->botsManager);
         $certificate = new CreateCertModel($this->botsManager);
+        $counter = new CountEventModel($this->botsManager);
 
         // dialog command handler
         switch ($request['message']['text']) {
@@ -46,6 +48,8 @@ class WebhookController extends Controller
             case 'Создать приглашение':
                 Telegram::getCommandBus()->execute('create_invite', $this->botsManager->bot()->getWebhookUpdate(), []);
                 break;
+            case 'Подсчёт созданых записей админами':
+                Telegram::getCommandBus()->execute('count_events', $this->botsManager->bot()->getWebhookUpdate(), []);
             default:
         }
 
@@ -69,6 +73,8 @@ class WebhookController extends Controller
             case 'set_cert_code':
                 $certificate->setCode();
                 break;
+            case 'select_date':
+                $counter->eventCounter();
 
         }
         return response(null, 200);
