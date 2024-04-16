@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Telegram\Models\CountEventModel;
 use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +51,6 @@ class WebhookController extends Controller
                 break;
             case 'Подсчёт созданых записей админами':
                 Telegram::getCommandBus()->execute('count_events', $this->botsManager->bot()->getWebhookUpdate(), []);
-            default:
         }
 
         // dialog command params
