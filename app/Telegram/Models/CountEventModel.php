@@ -44,11 +44,10 @@ class CountEventModel
                 'text' => $key . ' создал ' . $event . ' записей.'
             ]);
         }
-        $response = Telegram::sendMessage([
+        return Telegram::sendMessage([
             'chat_id' => Telegram::getWebhookUpdate()->message->chat->id,
             'text' => "Все данные успешно загружены в таблицу!\nСсылка: https://docs.google.com/spreadsheets/d/10EyxVi9MHMwTpQS6oW21D66FEJcnqE6tsaAAqaz0WYk/edit#gid=128871197\n\nВсегда сверяйтесь с таблицей, так как иногда бывают технические записи!"
         ]);
-        return $response;
     }
 
     private function iterationCount($events): void

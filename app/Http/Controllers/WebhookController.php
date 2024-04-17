@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TelegramUser;
 use App\Telegram\Models\CountEventModel;
 use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
@@ -37,6 +38,7 @@ class WebhookController extends Controller
         $invite = new CreateInviteModel($this->botsManager);
         $certificate = new CreateCertModel($this->botsManager);
         $counter = new CountEventModel($this->botsManager);
+        $telegramUser = TelegramUser::get()->where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
 
         // dialog command handler
         switch ($request['message']['text']) {
