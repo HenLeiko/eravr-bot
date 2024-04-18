@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Telegram\Bot\BotsManager;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\Update;
 
 class CreateInviteModel
@@ -24,7 +25,7 @@ class CreateInviteModel
     {
         $this->botsManager = $botsManager;
         $this->webhookUpdate = $this->botsManager->bot()->getWebhookUpdate();
-        $this->user = TelegramUser::where('user_id', '=', $this->webhookUpdate->message->from->id)->first();
+        $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
     }
 
     /**

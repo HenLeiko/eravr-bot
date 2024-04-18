@@ -27,8 +27,9 @@ class CountEventModel
         $this->iterationCount($eventsBelyaevo);
         $this->appendGoogleTable($eventsBelyaevo, 'Беляево');
         $this->appendGoogleTable($eventsSelega, 'Селигерская');
-        $this->appendGoogleTable($eventsMolodega, 'Молодёжная');
+        $sheet = $this->appendGoogleTable($eventsMolodega, 'Молодёжная');
         $this->sendResponse();
+        $sheet->append([['⬆ Данная статистика была собрана: ' . Carbon::now('Europe/Moscow')->format('d.m.Y H:i')]]);
         TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->chat->id)->update(['status' => 'none']);
     }
 
@@ -62,7 +63,7 @@ class CountEventModel
         }
     }
 
-    private function appendGoogleTable($events, $club): void
+    private function appendGoogleTable($events, $club): DSheets
     {
         $spreadsheet_id = '10EyxVi9MHMwTpQS6oW21D66FEJcnqE6tsaAAqaz0WYk';
         $config_path = storage_path('app/google-calendar/calendar-419415-3bb51b0d7788.json');
@@ -83,6 +84,6 @@ class CountEventModel
             }
         }
         $sheet->append($values);
-        $sheet->append([['⬆ Данная статистика была собрана: ' . Carbon::now()->format('d.m.Y H:i')]]);
+        return $sheet;
     }
 }

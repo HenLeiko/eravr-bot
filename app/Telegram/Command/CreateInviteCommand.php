@@ -30,6 +30,5 @@ class CreateInviteCommand extends Command
             'reply_markup' => $reply_markup,
         ]);
         $response = DB::table('telegram_users')->where('user_id', '=', $this->getUpdate()->getMessage()->from->id)->update(['status' => 'select_club']);
-        // TODO: Implement handle() method.
     }
 }
