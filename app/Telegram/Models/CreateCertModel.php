@@ -8,6 +8,7 @@ use DantSu\PHPImageEditor\Image;
 use Telegram\Bot\BotsManager;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class CreateCertModel
 {
@@ -19,7 +20,7 @@ class CreateCertModel
     {
         $this->botsManager = $botsManager;
         $this->webhookUpdate = $this->botsManager->bot()->getWebhookUpdate();
-        $this->user = TelegramUser::where('user_id', '=', $this->webhookUpdate->message->from->id)->first();
+        $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
     }
 
     /**

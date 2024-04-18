@@ -15,7 +15,5 @@ class CreateCertCommand extends Command
             'text' => 'Укажите номинал сертификата, пример: "2000"'
         ]);
         TelegramUser::where('user_id', '=', $this->getUpdate()->message->from->id)->update(['status' => 'add_cert_value']);
-
-        // TODO: Implement handle() method.
     }
 }

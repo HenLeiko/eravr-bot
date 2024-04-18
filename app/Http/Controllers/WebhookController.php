@@ -6,10 +6,8 @@ use App\Models\TelegramUser;
 use App\Telegram\Models\CountEventModel;
 use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Telegram\Bot\BotsManager;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -31,9 +29,7 @@ class WebhookController extends Controller
      */
     public function __invoke(Request $request): Response
     {
-        $userData = $this->botsManager->bot()->getWebhookUpdate()->message->from;
-        $userId = $userData->id;
-        $user = DB::table('telegram_users')->where('user_id', '=', $userId)->first();
+        $userData = Telegram::getWebhookUpdate()->message;
         $this->botsManager->bot()->commandsHandler(true);
         $invite = new CreateInviteModel($this->botsManager);
         $certificate = new CreateCertModel($this->botsManager);
@@ -41,7 +37,7 @@ class WebhookController extends Controller
         $telegramUser = TelegramUser::get()->where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
 
         // dialog command handler
-        switch ($request['message']['text']) {
+        switch (Telegram::getWebhookUpdate()->message->text) {
             case 'Создать сертификат':
                 Telegram::getCommandBus()->execute('create_cert', $this->botsManager->bot()->getWebhookUpdate(), []);
                 break;
@@ -56,7 +52,7 @@ class WebhookController extends Controller
         }
 
         // dialog command params
-        switch ($user->status) {
+        switch ($telegramUser->status) {
             case 'select_club':
                 $club = $this->botsManager->bot()->getWebhookUpdate()->message->text;
                 if ($club == 'Беляево' || $club == 'Молодёжная' || $club == 'Селигерская') {
