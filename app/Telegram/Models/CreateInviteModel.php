@@ -6,96 +6,105 @@ use App\Models\invitations;
 use App\Models\TelegramUser;
 use DantSu\PHPImageEditor\Image;
 use Illuminate\Database\Eloquent\Builder;
-use Telegram\Bot\BotsManager;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
-use Telegram\Bot\Objects\Update;
+use Telegram\Bot\Objects\Message;
 
 class CreateInviteModel
 {
-    protected BotsManager $botsManager;
     protected Builder|TelegramUser $user;
-    private Update $webhookUpdate;
+    private ?Message $update;
 
     /**
      * @throws TelegramSDKException
      */
-    public function __construct(BotsManager $botsManager)
+    public function __construct()
     {
-        $this->botsManager = $botsManager;
-        $this->webhookUpdate = $this->botsManager->bot()->getWebhookUpdate();
+        $this->update = Telegram::getWebhookUpdate()->message;
         $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
     }
 
     /**
-     * @throws TelegramSDKException
+     * Добавление оглавления приглашения
+     *
+     * @return void
      */
     public function selectClub(): void
     {
         $invite = new invitations();
         $invite->user_id = $this->user->id;
-        $invite->club = $this->webhookUpdate->message->text;
+        $invite->club = $this->update->text;
         $invite->save();
         $this->user->status = 'add_invite_title';
         $this->user->save();
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
+        Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
             'text' => 'Введите текст приглашения например: "На одиннадцатилетие Андрея"'
         ]);
     }
 
     /**
-     * @throws TelegramSDKException
+     * Добавление даты проведения мероприятия
+     *
+     * @return void
      */
     public function setTitle(): void
     {
         $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
-        $invite->title = $this->webhookUpdate->message->text;
+        $invite->title = $this->update->text;
         $invite->save();
         $this->user->status = 'add_invite_code';
         $this->user->save();
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
+        Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
             'text' => 'Введите дату мероприятие например: "3 марта с 14:00 до 16:00"'
         ]);
     }
 
     /**
-     * @throws TelegramSDKException
+     * Дабовления кода в базу, вызов функции создания изображения и ответ пользователю
+     *
+     * @return void
      */
     public function setCode(): void
     {
         $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
-        $invite->code = $this->webhookUpdate->message->text;
+        $invite->code = $this->update->text;
         $invite->save();
         $imageName = $this->makeImage();
         $keyboard = [
             ['Создать сертификат'],
             ['Создать абонемент'],
             ['Создать приглашение'],
+            ['Подсчёт созданых записей админами'],
         ];
         $reply_markup = Keyboard::make([
             'keyboard' => $keyboard,
             'resize_keyboard' => true,
             'one_time_keyboard' => true
         ]);
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
+        Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
             'text' => 'Приглашение успешно создано! :)',
             'reply_markup' => $reply_markup
         ]);
-        $this->botsManager->bot()->sendDocument([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
-            'document' => \Telegram\Bot\FileUpload\InputFile::create(__DIR__ . '/../storage/' . $imageName . '.png',)
+        Telegram::sendDocument([
+            'chat_id' => $this->update->chat->id,
+            'document' => InputFile::create(__DIR__ . '/../storage/' . $imageName . '.png'),
         ]);
     }
 
+    /**
+     * Создание каритинки приглашения
+     *
+     * @return string
+     */
     private function makeImage(): string
     {
         $imageName = uniqid();
         $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
-        $test = mb_strlen($invite->code)-3;
         if ($invite->code <= 25) {
             $fontSize = 27;
         } else {
