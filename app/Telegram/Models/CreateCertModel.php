@@ -5,35 +5,41 @@ namespace App\Telegram\Models;
 use App\Models\Certificate;
 use App\Models\TelegramUser;
 use DantSu\PHPImageEditor\Image;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Telegram\Bot\BotsManager;
-use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Objects\Message;
+use Telegram\Bot\Objects\Update;
 
 class CreateCertModel
 {
-    private mixed $botsManager;
-    private $webhookUpdate;
-    private $user;
+    private ?Message $update;
+    private null|TelegramUser|Model $user;
+    private null|Certificate|Model $certificate;
 
-    public function __construct(BotsManager $botsManager)
+    public function __construct()
     {
-        $this->botsManager = $botsManager;
-        $this->webhookUpdate = $this->botsManager->bot()->getWebhookUpdate();
-        $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
+        $this->update = Telegram::getWebhookUpdate()->message;
+        $this->user = TelegramUser::where('user_id', '=', $this->update->from->id)->first();
+        $this->certificate = Certificate::where('user_id', '=', $this->user->id)->latest()->first();
     }
 
     /**
-     * @throws TelegramSDKException
+     * Дабовление наминала сертификата в базу
+     *
+     * @return void
      */
     public function setValue(): void
     {
         $certificate = new Certificate();
-        $certificate->value = $this->botsManager->bot()->getWebhookUpdate()->message->text;
+        $certificate->value = $this->update->text;
         $certificate->user_id = $this->user->id;
         $certificate->save();
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
+        Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
             'text' => 'Укажите номер сертификата, пример: "ПАВЕЛ210524-1'
         ]);
         $this->user->status = 'set_cert_code';
@@ -41,43 +47,49 @@ class CreateCertModel
     }
 
     /**
-     * @throws TelegramSDKException
+     * Внесение кода сертификата в базу, вызов функции создания картинки и отправа ответа пользователю
+     *
+     * @return void
      */
     public function setCode(): void
     {
-        $cert = Certificate::where('user_id', '=', $this->user->id)->latest()->first();
-        $cert->code = $this->webhookUpdate->message->text;
-        $cert->save();
+        $this->certificate->code = $this->update->text;
+        $this->certificate->save();
         $imageName = $this->makeImage();
         $keyboard = [
             ['Создать сертификат'],
             ['Создать абонемент'],
             ['Создать приглашение'],
+            ['Подсчёт созданых записей админами'],
         ];
         $reply_markup = Keyboard::make([
             'keyboard' => $keyboard,
             'resize_keyboard' => true,
             'one_time_keyboard' => true
         ]);
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
-            'text' => 'Приглашение успешно создано! :)',
+        Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
+            'text' => 'Сертификат успешно создан! :)',
             'reply_markup' => $reply_markup
         ]);
-        $this->botsManager->bot()->sendDocument([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
-            'document' => \Telegram\Bot\FileUpload\InputFile::create(__DIR__ . '/../storage/' . $imageName . '.png',)
+        Telegram::sendDocument([
+            'chat_id' => $this->update->chat->id,
+            'document' => InputFile::create(__DIR__ . '/../storage/' . $imageName . '.png')
         ]);
         $this->user->status = 'none';
         $this->user->save();
     }
 
+    /**
+     * Создания картинки сертификата
+     *
+     * @return string
+     */
     private function makeImage(): string
     {
         $imageName = uniqid();
         $cert = Certificate::where('user_id', '=', $this->user->id)->latest()->first();
         $code = mb_strtoupper($cert->code);
-        print_r($code);
         Image::fromPath(__DIR__ . '/../resources/Сертификат.png')
             ->writeText($cert->value . ' ₽', __DIR__ . '/../resources/Montserrat-Regular.ttf', 70, '#FFFFFF', '745', '238')
             ->writeText($code, __DIR__ . '/../resources/Montserrat-Regular.ttf', 18, '000000', '870', '961', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
@@ -86,13 +98,15 @@ class CreateCertModel
     }
 
     /**
-     * @throws TelegramSDKException
+     * Сообщение об ошибке в запросе от пользователя
+     *
+     * @return Message
      */
-    public function getException()
+    public function getException(): Message
     {
-        $this->botsManager->bot()->sendMessage([
-            'chat_id' => $this->webhookUpdate->message->chat->id,
-            'text' => 'Введёное значение должно быть числом без каких-либо символов!'
+        return Telegram::sendMessage([
+            'chat_id' => $this->update->chat->id,
+            'text' => "\U0000274c Введёное значение должно быть числом без каких-либо символов!"
         ]);
     }
 }
