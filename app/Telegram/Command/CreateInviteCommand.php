@@ -12,25 +12,24 @@ class CreateInviteCommand extends Command
 {
     protected string $name = 'create_invite';
     protected string $description = 'Создать приглашение на мероприятие';
-    public function handle(): int|bool
+    public function handle(): void
     {
-        $reply_markup = Keyboard::make()
-            ->setResizeKeyboard(true)
-            ->setOneTimeKeyboard(true)
-            ->row([
-                Keyboard::button('Молодёжная')
-            ])
-            ->row([
-                Keyboard::button('Беляево')
-            ])
-            ->row([
-                Keyboard::button('Селигерская')
-            ]);
+        $keyboard = [
+            ['Молодёжная'],
+            ['Беляево'],
+            ['Селигерская'],
+        ];
+
+        $reply_markup = Keyboard::make([
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true,
+            'keyboard' => $keyboard
+        ]);
 
         $this->replyWithMessage([
             'text' => 'Чтобы создать приглашение выберите клуб в меню',
             'reply_markup' => $reply_markup,
         ]);
-        return TelegramUser::where('user_ud', '=', Telegram::getWebhookUpdate()->message->from->id)->update(['status' => 'select_club']);
+        TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->update(['status' => 'select_club']);
     }
 }
