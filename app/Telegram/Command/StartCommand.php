@@ -3,28 +3,21 @@
 namespace App\Telegram\Command;
 
 use App\Models\TelegramUser;
-use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 class StartCommand extends Command
 {
     protected string $name = 'start';
     protected string $description = 'Запуск / перезагрузка бота';
-    protected TelegramUser $telegramUser;
-
-    public function __construct(TelegramUser $telegramUser)
-    {
-        $this->telegramUser = $telegramUser;
-    }
 
     public function handle(): void
     {
-        $userData = $this->getUpdate()->message->from;
-        $userId = $userData->id;
-        $user = DB::table('telegram_users')->where('user_id', '=', $userId)->first();
+        $update = Telegram::getWebhookUpdate()->message;
+        $user = TelegramUser::where('user_id', '=', $update->from->id)->first();
         if (!$user) {
-            $this->createNewUser($userData);
+            $this->createNewUser($update->from);
         }
 
         $keyboard = [
@@ -46,15 +39,22 @@ class StartCommand extends Command
         ]);
     }
 
-    protected function createNewUser($userData): void
+    /**
+     * Запись пользователя в базу
+     *
+     * @param $update
+     * @return void
+     */
+    protected function createNewUser($update): void
     {
-        DB::table('telegram_users')->insert([
-            'user_id' => $userData->id,
-            'is_bot' => $userData->is_bot,
-            'first_name' => $userData->first_name,
-            'last_name' => $userData->last_name,
-            'username' => $userData->username,
-            'language_code' => $userData->language_code,
+        TelegramUser::updateOrCreate([
+            'user_id' => $update->id,
+            'is_bot' => $update->is_bot,
+            'first_name' => $update->first_name,
+            'last_name' => $update->last_name,
+            'username' => $update->username,
+            'status' => 'none',
+            'language_code' => $update->language_code,
         ]);
     }
 }
