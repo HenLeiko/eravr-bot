@@ -2,7 +2,7 @@
 
 namespace App\Telegram\Models;
 
-use App\Models\invitations;
+use App\Models\Invitation;
 use App\Models\TelegramUser;
 use DantSu\PHPImageEditor\Image;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,7 +33,7 @@ class CreateInviteModel
      */
     public function selectClub(): void
     {
-        $invite = new invitations();
+        $invite = new Invitation();
         $invite->user_id = $this->user->id;
         $invite->club = $this->update->text;
         $invite->save();
@@ -52,7 +52,7 @@ class CreateInviteModel
      */
     public function setTitle(): void
     {
-        $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
+        $invite = Invitation::where('user_id', '=', $this->user->id)->latest()->first();
         $invite->title = $this->update->text;
         $invite->save();
         $this->user->status = 'add_invite_code';
@@ -70,7 +70,7 @@ class CreateInviteModel
      */
     public function setCode(): void
     {
-        $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
+        $invite = Invitation::where('user_id', '=', $this->user->id)->latest()->first();
         $invite->code = $this->update->text;
         $invite->save();
         $imageName = $this->makeImage();
@@ -104,7 +104,7 @@ class CreateInviteModel
     private function makeImage(): string
     {
         $imageName = uniqid();
-        $invite = invitations::where('user_id', '=', $this->user->id)->latest()->first();
+        $invite = Invitation::where('user_id', '=', $this->user->id)->latest()->first();
         if ($invite->code <= 25) {
             $fontSize = 27;
         } else {
