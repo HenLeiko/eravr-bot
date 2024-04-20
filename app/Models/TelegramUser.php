@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramUser whereUsername($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\invitations> $invitations
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invitation> $invitations
  * @property-read int|null $invitations_count
  * @mixin \Eloquent
  */
@@ -49,6 +49,6 @@ class TelegramUser extends Model
 
     public function invitations(): HasMany
     {
-        return $this->hasMany(invitations::class);
+        return $this->hasMany(Invitation::class);
     }
 }
