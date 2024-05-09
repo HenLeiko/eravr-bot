@@ -5,7 +5,7 @@ use App\Telegram\Command\CreateCertCommand;
 use App\Telegram\Command\CreateInviteCommand;
 use App\Telegram\Command\CreatePassCommand;
 use App\Telegram\Command\StartCommand;
-use Telegram\Bot\Commands\HelpCommand;
+use App\Telegram\Command\HelpCommand;
 
 return [
     /*
