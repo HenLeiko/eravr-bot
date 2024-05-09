@@ -18,6 +18,13 @@ class CountEventModel
 
     public function eventCounter(): void
     {
+        $this->date = Telegram::getWebhookUpdate()->message->text;
+        if (!preg_match('/\d{2}\.0[1-9]\.\d{2}|\d{2}\.1[0-2]\.\d{2}/', $this->date, $matches)) {
+            Telegram::sendMessage([
+                'chat_id' => Telegram::getWebhookUpdate()->message->chat->id,
+                'text' => 'Указана не верная дата, используйте формат дд.мм.гг ч:м'
+            ]);
+        }
         $this->date = Carbon::createFromFormat('d.m.y H:i', Telegram::getWebhookUpdate()->message->text);
         $eventsMolodega = Event::get(Carbon::parse($this->date), Carbon::now(), [], 'ou86tdr91vgt3orsdtsnbu31r8@group.calendar.google.com');
         $eventsSelega = Event::get(Carbon::parse($this->date), Carbon::now(), [], '56vb14ndiolefkv6b88h4urrfc@group.calendar.google.com');
@@ -76,9 +83,9 @@ class CountEventModel
                     $event->googleEvent->summary,
                     $event->googleEvent->creator->email,
                     $club,
-                    Carbon::parse($event->googleEvent->created)->format('d.m.Y H:i'),
-                    Carbon::parse($event->googleEvent->start->dateTime)->format('d.m.Y H:i'),
-                    Carbon::parse($event->googleEvent->end->dateTime)->format('d.m.Y H:i'),
+                    Carbon::parse($event->googleEvent->created, 'Europe/Moscow')->format('d.m.Y H:i'),
+                    Carbon::parse($event->googleEvent->start->dateTime, 'Europe/Moscow')->format('d.m.Y H:i'),
+                    Carbon::parse($event->googleEvent->end->dateTime, 'Europe/Moscow')->format('d.m.Y H:i'),
                     $event->googleEvent->id,
                 ];
             }
