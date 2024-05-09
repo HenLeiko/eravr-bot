@@ -92,7 +92,7 @@ class CreateCertModel
         $code = mb_strtoupper($cert->code);
         Image::fromPath(__DIR__ . '/../resources/Сертификат.png')
             ->writeText($cert->value . ' ₽', __DIR__ . '/../resources/Montserrat-Regular.ttf', 70, '#FFFFFF', '745', '238')
-            ->writeText($code, __DIR__ . '/../resources/Montserrat-Regular.ttf', 18, '000000', '870', '961', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
+            ->writeText($code, __DIR__ . '/../resources/Montserrat-Regular.ttf', 18, '000000', '870', '960', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
             ->savePNG(__DIR__ . '/../storage/' . $imageName . '.png');
         return $imageName;
     }
