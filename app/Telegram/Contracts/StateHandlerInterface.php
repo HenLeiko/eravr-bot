@@ -16,5 +16,5 @@ interface StateHandlerInterface
      * @param array $data
      * @return void
      */
-    public function handle(Message $message, UserState $userState, array $data): void;
+    public function handle(Message $message, UserState $userState, array $context): void;
 }
