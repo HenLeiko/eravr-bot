@@ -50,30 +50,30 @@ class WebhookController extends Controller
             case 'Подсчёт созданых записей админами':
                 Telegram::getCommandBus()->execute('count_events', $this->botsManager->bot()->getWebhookUpdate(), []);
         }
-
         // dialog command params
-        switch ($telegramUser->status) {
-            case 'select_club':
-                $club = $this->botsManager->bot()->getWebhookUpdate()->message->text;
-                if ($club == 'Беляево' || $club == 'Молодёжная' || $club == 'Селигерская') {
-                    $invite->selectClub();
-                }
-                break;
-            case 'add_invite_title':
-                $invite->setTitle();
-                break;
-            case 'add_invite_code':
-                $invite->setCode();
-                break;
-            case 'add_cert_value':
-                is_numeric($this->botsManager->bot()->getWebhookUpdate()->message->text) ? $certificate->setValue() : $certificate->getException();
-                break;
-            case 'set_cert_code':
-                $certificate->setCode();
-                break;
-            case 'select_date':
-                $counter->eventCounter();
-
+        if (Telegram::getWebhookUpdate()->message->from->isBot == false) {
+            switch ($telegramUser->status) {
+                case 'select_club':
+                    $club = $this->botsManager->bot()->getWebhookUpdate()->message->text;
+                    if ($club == 'Беляево' || $club == 'Молодёжная' || $club == 'Селигерская') {
+                        $invite->selectClub();
+                    }
+                    break;
+                case 'add_invite_title':
+                    $invite->setTitle();
+                    break;
+                case 'add_invite_code':
+                    $invite->setCode();
+                    break;
+                case 'add_cert_value':
+                    is_numeric($this->botsManager->bot()->getWebhookUpdate()->message->text) ? $certificate->setValue() : $certificate->getException();
+                    break;
+                case 'set_cert_code':
+                    $certificate->setCode();
+                    break;
+                case 'select_date':
+                    $counter->eventCounter();
+            }
         }
         return response(null, 200);
     }
