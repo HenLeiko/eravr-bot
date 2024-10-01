@@ -8,6 +8,7 @@ use App\Telegram\Models\CreateCertModel;
 use App\Telegram\Models\CreateInviteModel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Telegram\Bot\BotsManager;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -29,30 +30,36 @@ class WebhookController extends Controller
      */
     public function __invoke(Request $request): Response
     {
-        $userData = Telegram::getWebhookUpdate()->message;
+        @$userData = Telegram::getWebhookUpdate()->message;
+        @$userId = $userData->id;
+        @$user = TelegramUser::where('user_id' , '=', $userId)->first();
+//        @$user = DB::table('telegram_users')->where('user_id', '=', $userId)->first();
         $this->botsManager->bot()->commandsHandler(true);
+        $updates = Telegram::getWebhookUpdate();
+
         $invite = new CreateInviteModel($this->botsManager);
         $certificate = new CreateCertModel($this->botsManager);
         $counter = new CountEventModel($this->botsManager);
         $telegramUser = TelegramUser::get()->where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
 
         // dialog command handler
-        switch (Telegram::getWebhookUpdate()->message->text) {
+        switch (@Telegram::getWebhookUpdate()->message->text) {
             case 'Создать сертификат':
-                Telegram::getCommandBus()->execute('create_cert', $this->botsManager->bot()->getWebhookUpdate(), []);
+                Telegram::getCommandBus()->execute('create_cert', $updates, []);
                 break;
             case 'Создать абонемент':
-                Telegram::getCommandBus()->execute('create_ticket', $this->botsManager->bot()->getWebhookUpdate(), []);
+                Telegram::getCommandBus()->execute('create_ticket', $updates, []);
                 break;
             case 'Создать приглашение':
-                Telegram::getCommandBus()->execute('create_invite', $this->botsManager->bot()->getWebhookUpdate(), []);
+                Telegram::getCommandBus()->execute('create_invite', $updates, []);
                 break;
             case 'Подсчёт созданых записей админами':
-                Telegram::getCommandBus()->execute('count_events', $this->botsManager->bot()->getWebhookUpdate(), []);
+                Telegram::getCommandBus()->execute('count_events', $updates, []);
+            default:
         }
 
         // dialog command params
-        switch ($telegramUser->status) {
+        switch (@$telegramUser->status) {
             case 'select_club':
                 $club = $this->botsManager->bot()->getWebhookUpdate()->message->text;
                 if ($club == 'Беляево' || $club == 'Молодёжная' || $club == 'Селигерская') {
@@ -73,7 +80,7 @@ class WebhookController extends Controller
                 break;
             case 'select_date':
                 $counter->eventCounter();
-
+            default:
         }
         return response(null, 200);
     }
