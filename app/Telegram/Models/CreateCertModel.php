@@ -5,14 +5,11 @@ namespace App\Telegram\Models;
 use App\Models\Certificate;
 use App\Models\TelegramUser;
 use DantSu\PHPImageEditor\Image;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Telegram\Bot\BotsManager;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\Message;
-use Telegram\Bot\Objects\Update;
 
 class CreateCertModel
 {
@@ -74,7 +71,7 @@ class CreateCertModel
         ]);
         Telegram::sendDocument([
             'chat_id' => $this->update->chat->id,
-            'document' => InputFile::create(__DIR__ . '/../storage/' . $imageName . '.png')
+            'document' => InputFile::create(__DIR__ . $imageName . '.png')
         ]);
         $this->user->status = 'none';
         $this->user->save();
@@ -93,7 +90,7 @@ class CreateCertModel
         Image::fromPath(__DIR__ . '/../resources/Сертификат.png')
             ->writeText($cert->value . ' ₽', __DIR__ . '/../resources/Montserrat-Regular.ttf', 70, '#FFFFFF', '745', '238')
             ->writeText($code, __DIR__ . '/../resources/Montserrat-Regular.ttf', 18, '000000', '870', '960', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
-            ->savePNG(__DIR__ . '/../storage/' . $imageName . '.png');
+            ->savePNG(__DIR__ . $imageName . '.png');
         return $imageName;
     }
 
