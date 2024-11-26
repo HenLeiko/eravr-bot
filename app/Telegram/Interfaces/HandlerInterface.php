@@ -4,6 +4,6 @@ namespace App\Telegram\Interfaces;
 
 interface HandlerInterface
 {
-    public function __invoke();
+    public function handle();
     public function getException();
 }
