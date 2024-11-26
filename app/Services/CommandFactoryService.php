@@ -8,16 +8,14 @@ class CommandFactoryService
 {
     /**
      * @param string $command
-     * @return CertService|(CertService&Application)|Application|\Illuminate\Foundation\Application|mixed|null
+     * @return string|Application|null
      */
-    public function getServiceFromCommand(string $command)
+    public function getServiceFromCommand(string $command): string|Application|null
     {
-        switch ($command) {
-            case 'create cert':
-                return app(CertService::class);
-
-            default:
-                return null;
-        }
+        return match ($command) {
+            'create_cert' => app(CertService::class),
+            'create_invite' => 'lorem',
+            default => null,
+        };
     }
 }
