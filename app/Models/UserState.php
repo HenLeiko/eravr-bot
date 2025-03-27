@@ -7,4 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserState extends Model
 {
     protected $fillable = ['user_id', 'state', 'command', 'data'];
+    protected $casts = [
+        'data' => 'array'
+    ];
 }
