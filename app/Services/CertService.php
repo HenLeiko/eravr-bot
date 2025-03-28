@@ -3,17 +3,14 @@
 namespace App\Services;
 
 
-use App\Models\Certificate;
 use App\Models\UserState;
 use DantSu\PHPImageEditor\Image;
-use Google\Service\Transcoder\Input;
-use phpseclib3\Math\BigInteger;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Objects\Message;
 
 class CertService
 {
-
     public function start($userId, $chatId, $message): void
     {
         Telegram::sendMessage([
@@ -33,12 +30,10 @@ class CertService
                 ],
             ]
         );
-        print_r('сервис создания сертификата');
     }
 
     public function handle($userId, $chatId, $message): void
     {
-        print_r('Параметр прошёл');
         $userState = UserState::where('user_id', $userId)->first();
         $state = $userState->state;
 
@@ -60,7 +55,7 @@ class CertService
                 $result = $this->createCertPicture($userState, $chatId);
                 $result ? $this->getResponse($chatId, 'Сертификат успешно создан! :)') : $this->getResponse($chatId, 'Произошла ошибка во время отправки сертификата :(');
                 break;
-            default: echo 'qwe';
+            default: return;
         }
     }
 
@@ -72,7 +67,7 @@ class CertService
         ]);
     }
 
-    private function createCertPicture($userState, $chatId)
+    private function createCertPicture($userState, $chatId): Message
     {
         $imageName = uniqid();
         $value = $userState->data['value'];
@@ -81,8 +76,6 @@ class CertService
         $path = storage_path('app/telegram/Сертификат.png');
         $font = storage_path('app/telegram/Montserrat-Regular.ttf');
         $savePath = storage_path('app/telegram-temps');
-
-        print_r( $path);
         Image::fromPath($path)
             ->writeText($value . ' ₽',  $font, 70, '#FFFFFF', '745', '238')
             ->writeText($code, $font, 18, '000000', '870', '960', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
@@ -91,6 +84,5 @@ class CertService
             'chat_id' => $chatId,
             'document' => InputFile::create($savePath . $imageName . '.png')
         ]);
-
     }
 }
