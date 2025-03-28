@@ -15,7 +15,7 @@ class CertService
     {
         Telegram::sendMessage([
             'chat_id' => $chatId,
-            'text' => 'Для начала создания сертификата укажите имя!',
+            'text' => 'Для создания сертификата укажите его наминал в формате: "2000"',
         ]);
         $userState = UserState::updateOrCreate([
             'user_id' => $userId,
