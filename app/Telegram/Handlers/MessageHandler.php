@@ -2,7 +2,7 @@
 
 namespace App\Telegram\Handlers;
 
-use App\Models\TelegramUser;
+use App\Models\UserState;
 use App\Services\CommandFactoryService;
 use App\Telegram\Interfaces\HandlerInterface;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -20,17 +20,31 @@ class MessageHandler implements HandlerInterface
     {
         $message = Telegram::getWebhookUpdate()->message;
         $command = $this->getCommandFromMapping($message);
+        $userId = $message->from->id;
+        $chatId = $message->chat->id;
 
         if($command) {
             $commandService = $this->commandFactory->getServiceFromCommand($command);
 
             if($commandService) {
-                $commandService->start();
+                $commandService->start($userId, $chatId, $message);
             } else {
-                print_r('Command not found');
+                $this->getResponse($chatId, 'Команда не найдена');
             }
         }
 
+        if(!$command) {
+            $state = UserState::where('user_id', $userId)->first();
+            if($state && $state->state !== 'done') {
+                $stateCommand = $state->command;
+                $service = $this->commandFactory->getServiceFromCommand($stateCommand);
+                if($service) {
+                    $service->handle($userId, $chatId, $message);
+                }
+            } else {
+                $this->getResponse($chatId, 'Команды не существует и никаких шагов не запущенно');
+            }
+        }
     }
 
     protected function getCommandFromMapping($message)
@@ -43,8 +57,16 @@ class MessageHandler implements HandlerInterface
         foreach ($commands as $key => $command) {
             if (mb_stripos($message->text, $key) !== false) {
                 return $command;
+            } else {
             }
         }
+    }
+    private function getResponse(int $chatId, String $text): void
+    {
+        $result = Telegram::sendMessage([
+            'chat_id' => $chatId,
+            'text' => $text
+        ]);
     }
 
     public function getException()
