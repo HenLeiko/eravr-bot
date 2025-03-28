@@ -36,10 +36,10 @@ return [
     |             ]
     */
     'bots' => [
-        'mybot' => [
-            'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
+        'eravrsmm' => [
+            'token' => env('TELEGRAM_BOT_TOKEN_ONE', 'YOUR-BOT-TOKEN'),
             'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
+            'webhook_url' => env('TELEGRAM_WEBHOOK_URL_ONE', 'YOUR-BOT-WEBHOOK-URL'),
             'commands' => [
                 StartCommand::class,
                 CreateInviteCommand::class,
@@ -47,6 +47,19 @@ return [
                 DebuginfoCommand::class,
                 CountEventCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
+            ],
+            'command_mapping' => [
+                'создать приглашение' => 'create_invite'
+            ],
+        ],
+        'eravrgift' => [
+            'token' => env('TELEGRAM_BOT_TOKEN_TWO', 'YOUR-BOT-TOKEN'),
+            'webhook_url' => env('TELEGRAM_WEBHOOK_URL_TWO', 'YOUR-WEBHOOK-URL'),
+            'commands' => [
+                StartCommand::class,
+            ],
+            'command_mapping' => [
+                'создать сертификат' => 'create_cert',
             ],
         ],
 
@@ -64,7 +77,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default' => 'mybot',
+    'default' => 'eravrsmm',
 
     /*
     |--------------------------------------------------------------------------
