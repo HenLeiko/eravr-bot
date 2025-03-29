@@ -24,11 +24,15 @@ class WebhookController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, string $botName): Response
     {
-        $update = Telegram::getWebhookUpdate();
+        if (!array_key_exists($botName, config('telegram.bots'))) {
+            return response('Unauthorized', 403);
+        }
+        $bot = $this->botsManager->bot($botName);
+        $update = $bot->getWebhookUpdate();
         Telegram::commandsHandler(true);
-        $this->messageHandler->handle($update);
+        $this->messageHandler->handle($update, $bot, $botName);
         return response(null, 200);
     }
 
