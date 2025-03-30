@@ -12,11 +12,14 @@ class CommandFactoryService
      * @param string $command
      * @return string|Application|CertService|null
      */
-    public function getServiceFromCommand(string $command): string|Application|null|CertService|InviteService
+    public function getServiceFromCommand(string $command): string|Application|null|CertService|InviteService|CreatePostService|StartGiftBotService
     {
         return match ($command) {
             'create_cert' => app(CertService::class),
             'create_invite' => app(InviteService::class),
+            'create_post' => app(CreatePostService::class),
+            '/start' => app(StartGiftBotService::class),
+//            'debuginfo' => app(DebuginfoService::class),
             default => null,
         };
     }
