@@ -42,24 +42,28 @@ return [
             'webhook_url' => env('TELEGRAM_WEBHOOK_URL_ONE', 'YOUR-BOT-WEBHOOK-URL'),
             'commands' => [
                 StartCommand::class,
-                CreateInviteCommand::class,
-                CreateCertCommand::class,
-                DebuginfoCommand::class,
-                CountEventCommand::class,
+//                CreateInviteCommand::class,
+//                CreateCertCommand::class,
+//                DebuginfoCommand::class,
+//                CountEventCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
             'command_mapping' => [
-                'создать приглашение' => 'create_invite'
+                'создать приглашение' => 'create_invite',
+                'создать сертификат' => 'create_cert',
             ],
         ],
         'eravrgift' => [
             'token' => env('TELEGRAM_BOT_TOKEN_TWO', 'YOUR-BOT-TOKEN'),
             'webhook_url' => env('TELEGRAM_WEBHOOK_URL_TWO', 'YOUR-WEBHOOK-URL'),
             'commands' => [
-                StartCommand::class,
+                \App\Telegram\Command\SecondStartCommand::class,
+                DebuginfoCommand::class,
             ],
             'command_mapping' => [
-                'создать сертификат' => 'create_cert',
+                'создать пост' => 'create_post',
+                '/start' => '/start',
+                'дебаг' => 'debuginfo',
             ],
         ],
 
