@@ -5,20 +5,31 @@ namespace App\Telegram\Handlers;
 use App\Models\UserState;
 use App\Services\CommandFactoryService;
 use App\Telegram\Interfaces\HandlerInterface;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Api;
 
 class MessageHandler implements HandlerInterface
 {
     protected CommandFactoryService $commandFactory;
+    protected Api $bot;
+    protected string $botName;
 
-    public function __construct()
+    public function __construct(Api $bot, string $botName)
     {
         $this->commandFactory = new CommandFactoryService();
+        $this->botName = $botName;
+        $this->bot = $bot;
     }
 
     public function handle(): void
     {
-        $message = Telegram::getWebhookUpdate()->message;
+        $message = $this->bot->getWebhookUpdate()->message;
+        if ($message == '') {
+            $this->bot->sendMessage([
+                'chat_id' => '948709856',
+                'text' => 'Что-то с каналом'
+            ]);
+            return;
+        }
         $command = $this->getCommandFromMapping($message);
         $userId = $message->from->id;
         $chatId = $message->chat->id;
@@ -27,7 +38,7 @@ class MessageHandler implements HandlerInterface
             $commandService = $this->commandFactory->getServiceFromCommand($command);
 
             if($commandService) {
-                $commandService->start($userId, $chatId, $message);
+                $commandService->start($this->bot, $userId, $chatId, $message);
             } else {
                 $this->getResponse($chatId, 'Команда не найдена');
             }
@@ -39,7 +50,7 @@ class MessageHandler implements HandlerInterface
                 $stateCommand = $state->command;
                 $service = $this->commandFactory->getServiceFromCommand($stateCommand);
                 if($service) {
-                    $service->handle($userId, $chatId, $message);
+                    $service->handle($this->bot, $userId, $chatId, $message);
                 }
             } else {
                 $this->getResponse($chatId, 'Команды не существует и никаких шагов не запущенно');
@@ -49,23 +60,20 @@ class MessageHandler implements HandlerInterface
 
     protected function getCommandFromMapping($message)
     {
-        $commands = [
-            'создать приглашение' => 'create_invite',
-            'создать сертификат' => 'create_cert'
-        ];
+        $commands = config("telegram.bots.{$this->botName}.command_mapping", []);
 
         foreach ($commands as $key => $command) {
             if (mb_stripos($message->text, $key) !== false) {
                 return $command;
-            } else {
             }
         }
+        return null;
     }
     private function getResponse(int $chatId, String $text): void
     {
-        $result = Telegram::sendMessage([
+        $this->bot->sendMessage([
             'chat_id' => $chatId,
-            'text' => $text
+            'text' => $text,
         ]);
     }
 
