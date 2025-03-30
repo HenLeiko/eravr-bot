@@ -4,18 +4,20 @@ namespace App\Services;
 
 use App\Models\UserState;
 use DantSu\PHPImageEditor\Image;
+use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\Message;
 
 class InviteService
 {
-    public function start($userId, $chatId, $message)
+    public function start($bot, $userId, $chatId, $message)
     {
-        Telegram::sendMessage([
+        $bot->sendMessage([
             'chat_id' => $chatId,
             'text' => 'Чтобы создать приглашение выберите клуб в меню',
         ]);
+
         $userState = UserState::updateOrCreate(
             [
                 'user_id' => $userId,
@@ -33,7 +35,7 @@ class InviteService
         );
     }
 
-    public function handle($userId, $chatId, $message)
+    public function handle($bot, $userId, $chatId, $message)
     {
         $userState = UserState::where('user_id', $userId)->first();
         $state = $userState->state;
@@ -47,33 +49,33 @@ class InviteService
                 $userState->state = 'title';
                 $userState->data = array_merge($userState->data ?? [], ['club' => $message->text]);
                 $userState->save();
-                $this->getResponse($chatId, 'Введите текст приглашения например: "На одиннадцатилетие Андрея"');
+                $this->getResponse($bot, $chatId, 'Введите текст приглашения например: "На одиннадцатилетие Андрея"');
                 break;
             case 'title':
                 $userState->state = 'date';
                 $userState->data = array_merge($userState->data ?? [], ['title' => $message->text]);
                 $userState->save();
-                $this->getResponse($chatId, 'Введите дату мероприятие например: "3 марта с 14:00 до 16:00"');
+                $this->getResponse($bot, $chatId, 'Введите дату мероприятие например: "3 марта с 14:00 до 16:00"');
                 break;
             case 'date':
                 $userState->state = 'done';
                 $userState->data = array_merge($userState->data ?? [], ['date' => $message->text]);
                 $userState->save();
-                $result = $this->createInvitePicture($chatId, $userState);
-                $result ? $this->getResponse($chatId, 'Приглашение успешно создано! :)') : $this->getResponse($chatId, 'Произошла ошибка во время отправки приглашения :(');
+                $result = $this->createInvitePicture($bot, $chatId, $userState);
+                $result ? $this->getResponse($bot, $chatId, 'Приглашение успешно создано! :)') : $this->getResponse($bot, $chatId, 'Произошла ошибка во время отправки приглашения :(');
                 break;
             default: return;
         }
     }
-    private function getResponse(int $chatId, String $text): void
+    private function getResponse($bot, int $chatId, String $text): void
     {
-        $result = Telegram::sendMessage([
+        $result = $bot->sendMessage([
             'chat_id' => $chatId,
-            'text' => $text
+            'text' => $text,
         ]);
     }
 
-    private function createInvitePicture($chatId, $userState): Message
+    private function createInvitePicture($bot, $chatId, $userState): Message
     {
         $imageName = uniqid();
         $club = $userState->data['club'];
@@ -90,7 +92,7 @@ class InviteService
             ->writeText($title, storage_path('app/telegram/Montserrat-Regular.ttf'), 36, '#FFFFFF', '595', '205')
             ->writeText($date, storage_path('app/telegram/Montserrat-Light.ttf'), $fontSize, '000000', '595', '280', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0, -0.8)
             ->savePNG($savePath . $imageName . '.png');
-        return Telegram::sendDocument([
+        return $bot->sendMessage([
             'chat_id' => $chatId,
             'document' => InputFile::create($savePath . $imageName . '.png')
         ]);
