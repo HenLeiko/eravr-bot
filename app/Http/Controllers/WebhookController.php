@@ -6,7 +6,6 @@ use App\Telegram\Handlers\MessageHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Telegram\Bot\BotsManager;
-use Telegram\Bot\Laravel\Facades\Telegram;
 
 class WebhookController extends Controller
 {
@@ -15,7 +14,6 @@ class WebhookController extends Controller
     public function __construct(BotsManager $botsManager)
     {
         $this->botsManager = $botsManager;
-        $this->messageHandler = new MessageHandler();
     }
 
     /**
@@ -31,8 +29,7 @@ class WebhookController extends Controller
         }
         $bot = $this->botsManager->bot($botName);
         $update = $bot->getWebhookUpdate();
-        Telegram::commandsHandler(true);
-        $this->messageHandler->handle($update, $bot, $botName);
+        (new MessageHandler($bot, $botName))->handle();
         return response(null, 200);
     }
 
