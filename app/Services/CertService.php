@@ -11,12 +11,16 @@ use Telegram\Bot\Objects\Message;
 
 class CertService
 {
-    public function start($userId, $chatId, $message): void
+    public function start($bot, $userId, $chatId, $message): void
     {
-        Telegram::sendMessage([
+        $bot->sendMessage([
             'chat_id' => $chatId,
-            'text' => 'Для создания сертификата укажите его наминал в формате: "2000"',
+            'text' => 'Для создания сертификата укажите его наминал в формате: "2000"'
         ]);
+//        Telegram::sendMessage([
+//            'chat_id' => $chatId,
+//            'text' => 'Для создания сертификата укажите его наминал в формате: "2000"',
+//        ]);
         $userState = UserState::updateOrCreate([
             'user_id' => $userId,
         ],
@@ -32,7 +36,7 @@ class CertService
         );
     }
 
-    public function handle($userId, $chatId, $message): void
+    public function handle($bot, $userId, $chatId, $message): void
     {
         $userState = UserState::where('user_id', $userId)->first();
         $state = $userState->state;
@@ -46,28 +50,32 @@ class CertService
                 $userState->state = 'set_code';
                 $userState->data = array_merge($userState->data ?? [], ['value' => $message->text]);
                 $userState->save();
-                $this->getResponse($chatId, 'Укажите код сертификата формата: АНДРЕЙ241224-1');
+                $this->getResponse($bot, $chatId, 'Укажите код сертификата формата: АНДРЕЙ241224-1');
                 break;
             case 'set_code':
                 $userState->data = array_merge($userState->data ?? [], ['code' => $message->text]);
                 $userState->state = 'done';
                 $userState->save();
-                $result = $this->createCertPicture($userState, $chatId);
-                $result ? $this->getResponse($chatId, 'Сертификат успешно создан! :)') : $this->getResponse($chatId, 'Произошла ошибка во время отправки сертификата :(');
+                $result = $this->createCertPicture($bot, $userState, $chatId);
+                $result ? $this->getResponse($bot, $chatId, 'Сертификат успешно создан! :)') : $this->getResponse($bot, $chatId, 'Произошла ошибка во время отправки сертификата :(');
                 break;
             default: return;
         }
     }
 
-    private function getResponse(int $chatId, String $text): void
+    private function getResponse($bot, int $chatId, String $text): void
     {
-        $result = Telegram::sendMessage([
+        $bot->sendMessage([
             'chat_id' => $chatId,
-            'text' => $text
+            'text' => $text,
         ]);
+//        $result = Telegram::sendMessage([
+//            'chat_id' => $chatId,
+//            'text' => $text
+//        ]);
     }
 
-    private function createCertPicture($userState, $chatId): Message
+    private function createCertPicture($bot, $userState, $chatId): Message
     {
         $imageName = uniqid();
         $value = $userState->data['value'];
@@ -80,9 +88,13 @@ class CertService
             ->writeText($value . ' ₽',  $font, 70, '#FFFFFF', '745', '238')
             ->writeText($code, $font, 18, '000000', '870', '960', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0)
             ->savePNG($savePath . $imageName . '.png');
-        return Telegram::sendDocument([
+//        return Telegram::sendDocument([
+//            'chat_id' => $chatId,
+//            'document' => InputFile::create($savePath . $imageName . '.png')
+//        ]);
+        return $bot->sendDocument([
             'chat_id' => $chatId,
-            'document' => InputFile::create($savePath . $imageName . '.png')
+            'document' => InputFile::create($savePath . $imageName . '.png'),
         ]);
     }
 }
