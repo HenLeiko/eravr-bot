@@ -26,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['chat_id', 'user_id'], 'unique_telegram_channel_members');
+            $table->index(['ref_by', 'user_id'], 'ref_by_count_index');
             $table->index('ref_code', 'ref_code_index');
             $table->index('status', 'status_index');
         });
