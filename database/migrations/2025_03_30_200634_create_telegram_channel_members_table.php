@@ -24,6 +24,10 @@ return new class extends Migration
             $table->dateTime('timeout')->nullable()->comment('Ограничение на участие в конкурсах');
             $table->boolean('is_participating')->default(false)->comment('Метка участия в конкурсе');
             $table->timestamps();
+
+            $table->unique(['chat_id', 'user_id'], 'unique_telegram_channel_members');
+            $table->index('ref_code', 'ref_code_index');
+            $table->index('status', 'status_index');
         });
     }
 
