@@ -5,6 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * App\Models\TelegramChannelMember
+ *
+ * @property-read TelegramChannelMember|null $referrer
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember query()
+ * @mixin \Eloquent
+ */
 class TelegramChannelMember extends Model
 {
     protected $table = 'telegram_channel_members';

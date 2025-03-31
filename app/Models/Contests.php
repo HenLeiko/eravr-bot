@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Contests
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Contests newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contests newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Contests query()
+ * @mixin \Eloquent
+ */
 class Contests extends Model
 {
     protected $table = 'contests';
