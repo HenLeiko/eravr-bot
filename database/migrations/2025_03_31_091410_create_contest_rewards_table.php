@@ -26,6 +26,7 @@ return new class extends Migration
                 ->default(true)
                 ->comment('Статус активности приза');
             $table->foreignId('contest_id')
+                ->nullable()
                 ->constrained('contests')
                 ->nullOnDelete()
                 ->comment('ID конкурса');
