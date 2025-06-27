@@ -22,9 +22,7 @@ class StartCommand extends Command
 
         $keyboard = [
             ['Создать сертификат'],
-            ['Создать абонемент'],
             ['Создать приглашение'],
-            ['Подсчёт созданых записей админами'],
         ];
 
         $reply_markup = Keyboard::make([
