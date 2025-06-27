@@ -14,6 +14,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ContestReward newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ContestReward query()
  * @property-read ContestReward|null $contest
+ * @property int $id
+ * @property string|null $name Название приза
+ * @property string|null $description Описание приза
+ * @property int $ref_amount Кол-во рефералов для приза
+ * @property bool $is_active Статус активности приза
+ * @property int|null $contest_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereContestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereRefAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ContestReward whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class ContestReward extends Model
