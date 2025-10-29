@@ -23,7 +23,7 @@ class CreateInviteModel
     public function __construct()
     {
         $this->update = Telegram::getWebhookUpdate()->message;
-        $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->message->from->id)->first();
+//        $this->user = TelegramUser::where('user_id', '=', Telegram::getWebhookUpdate()->getMessage()->from->id)->first();
     }
 
     /**

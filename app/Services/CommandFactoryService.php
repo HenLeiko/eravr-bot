@@ -18,6 +18,7 @@ class CommandFactoryService
             'create_cert' => app(CertService::class),
             'create_invite' => app(InviteService::class),
             'create_post' => app(CreatePostService::class),
+            'count_calendar_events' => app(CountCalendarEventsService::class),
             '/start' => app(StartGiftBotService::class),
 //            'debuginfo' => app(DebuginfoService::class),
             default => null,

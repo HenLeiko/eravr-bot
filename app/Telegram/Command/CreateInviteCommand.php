@@ -19,7 +19,6 @@ class CreateInviteCommand extends Command
             ['Беляево'],
             ['Селигерская'],
         ];
-
         $reply_markup = Keyboard::make([
             'resize_keyboard' => true,
             'one_time_keyboard' => true,

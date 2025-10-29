@@ -4,18 +4,28 @@ namespace App\Services;
 
 use App\Models\UserState;
 use DantSu\PHPImageEditor\Image;
-use Telegram\Bot\Api;
 use Telegram\Bot\FileUpload\InputFile;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Objects\Message;
 
 class InviteService
 {
     public function start($bot, $userId, $chatId, $message)
     {
+        $clubsKeyboard = [
+            ['Молодёжная'],
+            ['Беляево'],
+            ['Поносово'],
+        ];
+         $reply_markup = Keyboard::make([
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true,
+            'keyboard' => $clubsKeyboard
+        ]);
         $bot->sendMessage([
             'chat_id' => $chatId,
             'text' => 'Чтобы создать приглашение выберите клуб в меню',
+            'reply_markup' => $reply_markup,
         ]);
 
         $userState = UserState::updateOrCreate(
@@ -39,6 +49,15 @@ class InviteService
     {
         $userState = UserState::where('user_id', $userId)->first();
         $state = $userState->state;
+        $mainKeyboard = [
+            ['Создать приглашение'],
+            ['Создать сертификат'],
+        ];
+        $reply_markup = Keyboard::make([
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true,
+            'keyboard' => $mainKeyboard
+        ]);
 
         if (!$userState) {
             return;
@@ -62,16 +81,17 @@ class InviteService
                 $userState->data = array_merge($userState->data ?? [], ['date' => $message->text]);
                 $userState->save();
                 $result = $this->createInvitePicture($bot, $chatId, $userState);
-                $result ? $this->getResponse($bot, $chatId, 'Приглашение успешно создано! :)') : $this->getResponse($bot, $chatId, 'Произошла ошибка во время отправки приглашения :(');
+                $result ? $this->getResponse($bot, $chatId, 'Приглашение успешно создано! :)', $reply_markup) : $this->getResponse($bot, $chatId, 'Произошла ошибка во время отправки приглашения :(');
                 break;
             default: return;
         }
     }
-    private function getResponse($bot, int $chatId, String $text): void
+    private function getResponse($bot, int $chatId, String $text, $reply_markup = null): void
     {
         $result = $bot->sendMessage([
             'chat_id' => $chatId,
             'text' => $text,
+            'reply_markup' => $reply_markup,
         ]);
     }
 
@@ -92,7 +112,7 @@ class InviteService
             ->writeText($title, storage_path('app/telegram/Montserrat-Regular.ttf'), 36, '#FFFFFF', '595', '205')
             ->writeText($date, storage_path('app/telegram/Montserrat-Light.ttf'), $fontSize, '000000', '595', '280', Image::ALIGN_CENTER, Image::ALIGN_MIDDLE, 0, -0.8)
             ->savePNG($savePath . $imageName . '.png');
-        return $bot->sendMessage([
+        return $bot->sendDocument([
             'chat_id' => $chatId,
             'document' => InputFile::create($savePath . $imageName . '.png')
         ]);
