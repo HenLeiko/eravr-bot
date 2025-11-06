@@ -6,7 +6,6 @@ use App\Models\TelegramChannelMember;
 use App\Models\UserState;
 use App\Services\CommandFactoryService;
 use App\Telegram\Interfaces\HandlerInterface;
-use Carbon\Carbon;
 use Telegram\Bot\Api;
 
 class MessageHandler implements HandlerInterface
@@ -109,9 +108,7 @@ HTML;
             $user = TelegramChannelMember::where('user_id', '=', $update->callbackQuery->from->id)->first();
             list($action, $type, $id) = explode(':', $callbackQuery);
             if ($action == 'get') {
-                print_r('action is ready ');
                 if ($type == 'referrals') {
-                    print_r('method is ready');
                     $refCount = $user->referrals->count();
                     $this->bot->sendMessage([
                         'chat_id' => $update->callbackQuery->message->chat->id,
