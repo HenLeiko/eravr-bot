@@ -94,7 +94,8 @@ HTML;
 
                 $this->bot->sendMessage([
                     'chat_id' => $update->chatMember->from->id,
-                    'text' => $isNoReffer
+                    'parse_mode' => 'HTML',
+                    'text' => $isNoReffer,
                 ]);
             }
 
