@@ -77,7 +77,8 @@ class MessageHandler implements HandlerInterface
             $telegramChannelMember = TelegramChannelMember::where('user_id', '=', $update->chatMember->from->id)->first();
             if ($telegramChannelMember && $newChatMember->status == 'left' && $telegramChannelMember->is_participating) {
                 $telegramChannelMember->status = $newChatMember->status;
-
+                $telegramChannelMember->is_participating = false;
+                $telegramChannelMember->save();
                 $isNoReffer = <<<HTML
 👋 Здравствуйте. <b>Вы отписались от канала во время проведения розыгрыша.</b> Это означает, что вы больше <b>не участвуете в розыгрыше призов</b>, которые достанутся трём случайно выбранным победителям.
 
@@ -99,8 +100,7 @@ HTML;
                 ]);
             }
 
-            $telegramChannelMember->is_participating = false;
-            $telegramChannelMember->save();
+
     }
 
     private function callbackHandler($update)
