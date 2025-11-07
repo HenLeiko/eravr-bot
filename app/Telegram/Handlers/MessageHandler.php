@@ -75,7 +75,7 @@ class MessageHandler implements HandlerInterface
                 ' теперь имеет статус ' . $update->chatMember->newChatMember->status,
             ]);
             $telegramChannelMember = TelegramChannelMember::where('user_id', '=', $update->chatMember->from->id)->first();
-            if ($update->chatMember->newChatMember->status == 'member') {
+            if ($update->chatMember->newChatMember->status == 'member' || $update->chatMember->newChatMember->status == 'administrator') {
                 $telegramChannelMember->status = $update->chatMember->newChatMember->status;
                 $telegramChannelMember->save();
             }

@@ -14,18 +14,23 @@ class StartGiftBotService
         ];
         $refCode = trim(substr($message->text, 7));
         $channelMemberInfo = $this->getChannelMemberInfo($bot, $chatId);
+        $referrer = TelegramChannelMember::where('ref_code', $refCode)->first();
         $telegramChannelMember = TelegramChannelMember::createOrFirst(
             ['user_id' => $userId, 'chat_id' => $chatId],
             [
                 'chat_id' => $chatId,
                 'user_id' => $userId,
+                'ref_by' => $referrer->id,
                 'status' => $channelMemberInfo->status,
                 'timeout' => null,
                 'is_participating' => false,
             ]
         );
+        if ($referrer && $referrer == '') {
+            $telegramChannelMember->ref_by = $referrer->id;
+        }
 //        TODO: доделать проверки
-        if ($channelMemberInfo == 'member') {
+        if ($channelMemberInfo == 'member' || $telegramChannelMember == 'owner' || $telegramChannelMember == 'administrator') {
             $telegramChannelMember->update(['status' => $channelMemberInfo->status]);
             $telegramChannelMember->save();
         }
@@ -38,13 +43,12 @@ class StartGiftBotService
             return;
         }
 //        подписан и нажал участвовать, нет таймаута
-        if ($telegramChannelMember->status == 'member' || $telegramChannelMember->status == 'creator' && $refCode !== '') {
+        if ($telegramChannelMember->status == 'member' || $telegramChannelMember->status == 'creator' || $telegramChannelMember->status == 'administrator' && $refCode !== '') {
             if ($telegramChannelMember->ref_code == null) {
                 $telegramChannelMember->ref_code = $telegramChannelMember::generateRefCode();
                 $telegramChannelMember->save();
             }
 
-            $referrer = TelegramChannelMember::where('ref_code', $refCode)->first();
             if ($referrer && $referrer->id !== $telegramChannelMember->user_id && $telegramChannelMember->isTimeout()) {
                 $telegramChannelMember->ref_by = $referrer->id;
                 $telegramChannelMember->save();
