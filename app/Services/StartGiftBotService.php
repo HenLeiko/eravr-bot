@@ -25,7 +25,7 @@ class StartGiftBotService
                 'is_participating' => false,
             ]
         );
-        if ($referrer && $referrer == '') {
+        if ($referrer) {
             $telegramChannelMember->ref_by = $referrer->id;
             $telegramChannelMember->save();
         }
