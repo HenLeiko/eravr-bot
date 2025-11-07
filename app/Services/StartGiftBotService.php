@@ -25,6 +25,10 @@ class StartGiftBotService
             ]
         );
 //        TODO: доделать проверки
+        if ($channelMemberInfo == 'member' && $telegramChannelMember) {
+            $telegramChannelMember->update(['status' => $channelMemberInfo->status]);
+            $telegramChannelMember->save();
+        }
 //        не подписан и есть таймаут
         if ($telegramChannelMember->status == 'left' && !$telegramChannelMember->isTimeout()) {
             $bot->sendMessage([
