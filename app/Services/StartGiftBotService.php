@@ -20,7 +20,6 @@ class StartGiftBotService
             [
                 'chat_id' => $chatId,
                 'user_id' => $userId,
-                'ref_by' => $referrer->id,
                 'status' => $channelMemberInfo->status,
                 'timeout' => null,
                 'is_participating' => false,
@@ -28,6 +27,7 @@ class StartGiftBotService
         );
         if ($referrer && $referrer == '') {
             $telegramChannelMember->ref_by = $referrer->id;
+            $telegramChannelMember->save();
         }
 //        TODO: доделать проверки
         if ($channelMemberInfo == 'member' || $telegramChannelMember == 'owner' || $telegramChannelMember == 'administrator') {
