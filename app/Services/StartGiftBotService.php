@@ -139,11 +139,16 @@ HTML;
 ➡️ <i>Если пришли по реферальной ссылке, но не подписались, вы не засчитываетесь человеку, который вас пригласил.</i>
 HTML;
 
-
+            $inlineKeyboard = [
+            [
+                ['text' => 'Подписаться на канал!', 'url' => 'https://t.me/era_vr?start']
+            ]
+        ];
             $bot->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $text,
-                'parse_mode' => 'HTML'
+                'parse_mode' => 'HTML',
+                'reply_markup' => json_encode(['inline_keyboard' => $inlineKeyboard]),
             ]);
         }
     }
