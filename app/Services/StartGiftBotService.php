@@ -25,7 +25,7 @@ class StartGiftBotService
             ]
         );
 //        TODO: доделать проверки
-        if ($channelMemberInfo == 'member' && $telegramChannelMember) {
+        if ($channelMemberInfo == 'member') {
             $telegramChannelMember->update(['status' => $channelMemberInfo->status]);
             $telegramChannelMember->save();
         }
