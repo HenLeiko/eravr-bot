@@ -29,7 +29,7 @@ class StartGiftBotService
             $telegramChannelMember->ref_by = $referrer->id;
             $telegramChannelMember->save();
         }
-//        TODO: доделать проверки
+
         if ($channelMemberInfo == 'member' || $telegramChannelMember == 'administrator') {
             $telegramChannelMember->update(['status' => $channelMemberInfo->status]);
             $telegramChannelMember->save();
