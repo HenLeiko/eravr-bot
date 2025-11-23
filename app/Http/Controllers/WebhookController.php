@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Telegram\Models\CreateCertModel;
-use App\Telegram\Models\CreateInviteModel;
+use App\Telegram\Handlers\MessageHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Telegram\Bot\BotsManager;
-use Telegram\Bot\Exceptions\TelegramSDKException;
-use Telegram\Bot\Laravel\Facades\Telegram;
 
 class WebhookController extends Controller
 {
     protected BotsManager $botsManager;
+    protected MessageHandler $messageHandler;
     public function __construct(BotsManager $botsManager)
     {
         $this->botsManager = $botsManager;
@@ -24,53 +21,15 @@ class WebhookController extends Controller
      *
      * @param Request $request
      * @return Response
-     * @throws TelegramSDKException
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, string $botName): Response
     {
-        $userData = $this->botsManager->bot()->getWebhookUpdate()->message->from;
-        $userId = $userData->id;
-        $user = DB::table('telegram_users')->where('user_id', '=', $userId)->first();
-        $this->botsManager->bot()->commandsHandler(true);
-        $invite = new CreateInviteModel($this->botsManager);
-        $certificate = new CreateCertModel($this->botsManager);
-
-        // dialog command handler
-        switch ($request['message']['text']) {
-            case 'Создать сертификат':
-                Telegram::getCommandBus()->execute('create_cert', $this->botsManager->bot()->getWebhookUpdate(), []);
-                break;
-            case 'Создать абонемент':
-                Telegram::getCommandBus()->execute('create_ticket', $this->botsManager->bot()->getWebhookUpdate(), []);
-                break;
-            case 'Создать приглашение':
-                Telegram::getCommandBus()->execute('create_invite', $this->botsManager->bot()->getWebhookUpdate(), []);
-                break;
-            default:
+        if (!array_key_exists($botName, config('telegram.bots'))) {
+            return response('Unauthorized', 403);
         }
-
-        // dialog command params
-        switch ($user->status) {
-            case 'select_club':
-                $club = $this->botsManager->bot()->getWebhookUpdate()->message->text;
-                if ($club == 'Беляево' || $club == 'Молодёжная' || $club == 'Селигерская') {
-                    $invite->selectClub();
-                }
-                break;
-            case 'add_invite_title':
-                $invite->setTitle();
-                break;
-            case 'add_invite_code':
-                $invite->setCode();
-                break;
-            case 'add_cert_value':
-                is_numeric($this->botsManager->bot()->getWebhookUpdate()->message->text) ? $certificate->setValue() : $certificate->getException();
-                break;
-            case 'set_cert_code':
-                $certificate->setCode();
-                break;
-
-        }
+        $bot = $this->botsManager->bot($botName);
+        $update = $bot->getWebhookUpdate();
+        (new MessageHandler($bot, $botName))->handle();
         return response(null, 200);
     }
 

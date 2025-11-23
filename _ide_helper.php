@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 10.46.0.
+ * Generated for Laravel 10.48.22.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -4882,6 +4882,29 @@ namespace Illuminate\Support\Facades {
                         return $instance->macroCall($method, $parameters);
         }
                     /**
+         * Run an insert statement against the database.
+         *
+         * @param string $query
+         * @param array $bindings
+         * @param string|null $sequence
+         * @return bool 
+         * @static 
+         */        public static function insert($query, $bindings = [], $sequence = null)
+        {
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->insert($query, $bindings, $sequence);
+        }
+                    /**
+         * Get the connection's last insert ID.
+         *
+         * @return string|int|null 
+         * @static 
+         */        public static function getLastInsertId()
+        {
+                        /** @var \Illuminate\Database\MySqlConnection $instance */
+                        return $instance->getLastInsertId();
+        }
+                    /**
          * Determine if the connected database is a MariaDB database.
          *
          * @return bool 
@@ -5042,18 +5065,6 @@ namespace Illuminate\Support\Facades {
         {            //Method inherited from \Illuminate\Database\Connection         
                         /** @var \Illuminate\Database\MySqlConnection $instance */
                         return $instance->cursor($query, $bindings, $useReadPdo);
-        }
-                    /**
-         * Run an insert statement against the database.
-         *
-         * @param string $query
-         * @param array $bindings
-         * @return bool 
-         * @static 
-         */        public static function insert($query, $bindings = [])
-        {            //Method inherited from \Illuminate\Database\Connection         
-                        /** @var \Illuminate\Database\MySqlConnection $instance */
-                        return $instance->insert($query, $bindings);
         }
                     /**
          * Run an update statement against the database.
@@ -6381,12 +6392,12 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $target
          * @param string $link
-         * @return void 
+         * @return bool|null 
          * @static 
          */        public static function link($target, $link)
         {
                         /** @var \Illuminate\Filesystem\Filesystem $instance */
-                        $instance->link($target, $link);
+                        return $instance->link($target, $link);
         }
                     /**
          * Create a relative symlink to the target file or directory.
@@ -8872,6 +8883,17 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
                         return $instance->hasSent($notifiable, $notification);
+        }
+                    /**
+         * Specify if notification should be serialized and restored when being "pushed" to the queue.
+         *
+         * @param bool $serializeAndRestore
+         * @return \Illuminate\Support\Testing\Fakes\NotificationFake 
+         * @static 
+         */        public static function serializeAndRestore($serializeAndRestore = true)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
+                        return $instance->serializeAndRestore($serializeAndRestore);
         }
                     /**
          * Get the notifications that have been sent.
@@ -17187,35 +17209,6 @@ namespace Telegram\Bot\Laravel\Facades {
      * @see \Telegram\Bot\BotsManager
      * @see \Telegram\Bot\Api
      * @method static \Telegram\Bot\BotsManager manager(array $config)
-     * @method static void macro($name, $macro)
-     * @method static void mixin($mixin, $replace = true)
-     * @method static void hasMacro($name)
-     * @method static void flushMacros()
-     * @method static void macroCall($method, $parameters)
-     * @method static void useEventDispatcher(\Telegram\Bot\Events\EventDispatcherListenerContract $emitter)
-     * @method static \Telegram\Bot\Events\EventDispatcherListenerContract eventDispatcher()
-     * @method static bool hasEventDispatcher()
-     * @method static void on(string $event, callable $listener, int $priority = 0)
-     * @method static \Telegram\Bot\Api setAsyncRequest(bool $isAsyncRequest)
-     * @method static \Telegram\Bot\Api setHttpClientHandler(\Telegram\Bot\HttpClients\HttpClientInterface $httpClientHandler)
-     * @method static \Telegram\Bot\Api setBaseBotUrl(string $baseBotUrl)
-     * @method static null|\Telegram\Bot\TelegramResponse getLastResponse()
-     * @method static string downloadFile(\Telegram\Bot\Objects\File|\Telegram\Bot\Objects\BaseObject|string $file, string $filename)
-     * @method static string getAccessToken()
-     * @method static \Telegram\Bot\Api setAccessToken(string $accessToken)
-     * @method static bool isAsyncRequest()
-     * @method static int getTimeOut()
-     * @method static \Telegram\Bot\Api setTimeOut(int $timeOut)
-     * @method static int getConnectTimeOut()
-     * @method static \Telegram\Bot\Api setConnectTimeOut(int $connectTimeOut)
-     * @method static \Telegram\Bot\TelegramClient getClient()
-     * @method static \Telegram\Bot\Commands\CommandBus getCommandBus()
-     * @method static \Telegram\Bot\Api setCommandBus(\Telegram\Bot\Commands\CommandBus $commandBus)
-     * @method static \Telegram\Bot\Objects\Update|array commandsHandler(bool $webhook = false, ?\Psr\Http\Message\RequestInterface $request = null)
-     * @method static void processCommand(\Telegram\Bot\Objects\Update $update)
-     * @method static mixed triggerCommand(string $name, \Telegram\Bot\Objects\Update $update, ?array $entity = null)
-     * @method static \Psr\Container\ContainerInterface getContainer()
-     * @method static bool hasContainer()
      * @method static bool kickChatMember(array $params)
      * @method static bool banChatMember(array $params)
      * @method static string exportChatInviteLink(array $params)
@@ -17248,6 +17241,11 @@ namespace Telegram\Bot\Laravel\Facades {
      * @method static bool setMyCommands(array $params)
      * @method static bool deleteMyCommands(array $params = [])
      * @method static array getMyCommands(array $params = [])
+     * @method static \Telegram\Bot\Commands\CommandBus getCommandBus()
+     * @method static \Telegram\Bot\Api setCommandBus(\Telegram\Bot\Commands\CommandBus $commandBus)
+     * @method static \Telegram\Bot\Objects\Update|array commandsHandler(bool $webhook = false, ?\Psr\Http\Message\RequestInterface $request = null)
+     * @method static void processCommand(\Telegram\Bot\Objects\Update $update)
+     * @method static mixed triggerCommand(string $name, \Telegram\Bot\Objects\Update $update, ?array $entity = null)
      * @method static \Telegram\Bot\Objects\Message editMessageText(array $params)
      * @method static \Telegram\Bot\Objects\Message editMessageCaption(array $params)
      * @method static \Telegram\Bot\Objects\Message editMessageMedia(array $params)
@@ -17260,9 +17258,33 @@ namespace Telegram\Bot\Laravel\Facades {
      * @method static \Telegram\Bot\Objects\User getMe()
      * @method static \Telegram\Bot\Objects\UserProfilePhotos getUserProfilePhotos(array $params)
      * @method static \Telegram\Bot\Objects\File getFile(array $params)
+     * @method static null|\Psr\Container\ContainerInterface getContainer()
+     * @method static bool hasContainer()
+     * @method static void useEventDispatcher(\Telegram\Bot\Events\EventDispatcherListenerContract $emitter)
+     * @method static \Telegram\Bot\Events\EventDispatcherListenerContract eventDispatcher()
+     * @method static bool hasEventDispatcher()
+     * @method static void on(string $event, callable $listener, int $priority = 0)
+     * @method static \Telegram\Bot\Api setAsyncRequest(bool $isAsyncRequest)
+     * @method static \Telegram\Bot\Api setHttpClientHandler(\Telegram\Bot\HttpClients\HttpClientInterface $httpClientHandler)
+     * @method static \Telegram\Bot\Api setBaseBotUrl(string $baseBotUrl)
+     * @method static null|\Telegram\Bot\TelegramResponse getLastResponse()
+     * @method static string downloadFile(\Telegram\Bot\Objects\File|\Telegram\Bot\Objects\BaseObject|string $file, string $filename)
+     * @method static string getAccessToken()
+     * @method static \Telegram\Bot\Api setAccessToken(string $accessToken)
+     * @method static bool isAsyncRequest()
+     * @method static int getTimeOut()
+     * @method static \Telegram\Bot\Api setTimeOut(int $timeOut)
+     * @method static int getConnectTimeOut()
+     * @method static \Telegram\Bot\Api setConnectTimeOut(int $connectTimeOut)
+     * @method static \Telegram\Bot\TelegramClient getClient()
      * @method static \Telegram\Bot\Objects\Message sendLocation(array $params)
      * @method static \Telegram\Bot\Objects\Message editMessageLiveLocation(array $params)
      * @method static \Telegram\Bot\Objects\Message stopMessageLiveLocation(array $params)
+     * @method static void macro($name, $macro)
+     * @method static void mixin($mixin, $replace = true)
+     * @method static void hasMacro($name)
+     * @method static void flushMacros()
+     * @method static void macroCall($method, $parameters)
      * @method static \Telegram\Bot\Objects\Message sendMessage(array $params)
      * @method static \Telegram\Bot\Objects\Message forwardMessage(array $params)
      * @method static \Telegram\Bot\Objects\Message copyMessage(array $params)
@@ -17279,6 +17301,7 @@ namespace Telegram\Bot\Laravel\Facades {
      * @method static \Telegram\Bot\Objects\Message sendPoll(array $params)
      * @method static \Telegram\Bot\Objects\Message sendDice(array $params)
      * @method static bool sendChatAction(array $params)
+     * @method static bool setMessageReaction(array $params)
      * @method static void setPassportDataErrors(array $params)
      * @method static \Telegram\Bot\Objects\Message sendInvoice(array $params)
      * @method static bool answerShippingQuery(array $params)
@@ -17301,7 +17324,7 @@ namespace Telegram\Bot\Laravel\Facades {
      * @method static bool removeWebhook()
      * @see \Telegram\Bot\Commands\CommandBus
      * @method static array getCommands()
-     * @method static \Telegram\Bot\Commands\CommandBus addCommands(array $commands)
+     * @method static \Telegram\Bot\Commands\CommandBus addCommands(iterable $commands)
      * @method static \Telegram\Bot\Commands\CommandBus addCommand(\Telegram\Bot\Commands\CommandInterface|string $command)
      * @method static \Telegram\Bot\Commands\CommandBus removeCommand(string $name)
      * @method static \Telegram\Bot\Commands\CommandBus removeCommands(array $names)
@@ -17404,7 +17427,7 @@ namespace Telegram\Bot\Laravel\Facades {
                     /**
          * 
          *
-         * @param \Telegram\Bot\list<(string  | class-string<CommandInterface>)> $commands A list of command names or FQCNs of CommandInterface instances.
+         * @param \Telegram\Bot\list<(string  | class-string<CommandInterface>)>  $commands  A list of command names or FQCNs of CommandInterface instances.
          * @return array An array of commands which includes global and bot specific commands.
          * @deprecated Will be removed in SDK v4
          * @internal Builds the list of commands for the given commands array.
@@ -17413,6 +17436,86 @@ namespace Telegram\Bot\Laravel\Facades {
         {
                         /** @var \Telegram\Bot\BotsManager $instance */
                         return $instance->parseBotCommands($commands);
+        }
+            }
+    }
+
+namespace Spatie\GoogleCalendar {
+            /**
+     * 
+     *
+     */        class GoogleCalendarFacade {
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function getCalendarId()
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->getCalendarId();
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function listEvents($startDateTime = null, $endDateTime = null, $queryParameters = [])
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->listEvents($startDateTime, $endDateTime, $queryParameters);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function getEvent($eventId)
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->getEvent($eventId);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function insertEvent($event, $optParams = [])
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->insertEvent($event, $optParams);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function insertEventFromText($event)
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->insertEventFromText($event);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function updateEvent($event, $optParams = [])
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->updateEvent($event, $optParams);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function deleteEvent($eventId, $optParams = [])
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->deleteEvent($eventId, $optParams);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function getService()
+        {
+                        /** @var \Spatie\GoogleCalendar\GoogleCalendar $instance */
+                        return $instance->getService();
         }
             }
     }
@@ -17526,10 +17629,10 @@ namespace Spatie\LaravelIgnition\Facades {
          * 
          *
          * @static 
-         */        public static function withStackFrameArguments($withStackFrameArguments = true)
+         */        public static function withStackFrameArguments($withStackFrameArguments = true, $forcePHPIniSetting = false)
         {
                         /** @var \Spatie\FlareClient\Flare $instance */
-                        return $instance->withStackFrameArguments($withStackFrameArguments);
+                        return $instance->withStackFrameArguments($withStackFrameArguments, $forcePHPIniSetting);
         }
                     /**
          * 
@@ -17590,10 +17693,10 @@ namespace Spatie\LaravelIgnition\Facades {
          * 
          *
          * @static 
-         */        public static function registerErrorHandler()
+         */        public static function registerErrorHandler($errorLevels = null)
         {
                         /** @var \Spatie\FlareClient\Flare $instance */
-                        return $instance->registerErrorHandler();
+                        return $instance->registerErrorHandler($errorLevels);
         }
                     /**
          * 
@@ -17661,10 +17764,19 @@ namespace Spatie\LaravelIgnition\Facades {
          * 
          *
          * @static 
-         */        public static function report($throwable, $callback = null, $report = null)
+         */        public static function report($throwable, $callback = null, $report = null, $handled = null)
         {
                         /** @var \Spatie\FlareClient\Flare $instance */
-                        return $instance->report($throwable, $callback, $report);
+                        return $instance->report($throwable, $callback, $report, $handled);
+        }
+                    /**
+         * 
+         *
+         * @static 
+         */        public static function reportHandled($throwable)
+        {
+                        /** @var \Spatie\FlareClient\Flare $instance */
+                        return $instance->reportHandled($throwable);
         }
                     /**
          * 
@@ -19403,7 +19515,7 @@ namespace  {
              * Add a join clause to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @param string $type
@@ -19419,7 +19531,7 @@ namespace  {
              * Add a "join where" clause to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string $second
              * @param string $type
@@ -19435,7 +19547,7 @@ namespace  {
              *
              * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
              * @param string $as
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @param string $type
@@ -19477,7 +19589,7 @@ namespace  {
              * Add a left join to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19491,7 +19603,7 @@ namespace  {
              * Add a "join where" clause to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19506,7 +19618,7 @@ namespace  {
              *
              * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
              * @param string $as
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19534,7 +19646,7 @@ namespace  {
              * Add a "right join where" clause to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19549,7 +19661,7 @@ namespace  {
              *
              * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
              * @param string $as
-             * @param \Closure|string $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19563,7 +19675,7 @@ namespace  {
              * Add a "cross join" clause to the query.
              *
              * @param \Illuminate\Contracts\Database\Query\Expression|string $table
-             * @param \Closure|string|null $first
+             * @param \Closure|\Illuminate\Contracts\Database\Query\Expression|string|null $first
              * @param string|null $operator
              * @param \Illuminate\Contracts\Database\Query\Expression|string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -19614,7 +19726,7 @@ namespace  {
                             /**
              * Add a "where" clause comparing two columns to the query.
              *
-             * @param string|array $first
+             * @param \Illuminate\Contracts\Database\Query\Expression|string|array $first
              * @param string|null $operator
              * @param string|null $second
              * @param string|null $boolean
@@ -19628,7 +19740,7 @@ namespace  {
                             /**
              * Add an "or where" clause comparing two columns to the query.
              *
-             * @param string|array $first
+             * @param \Illuminate\Contracts\Database\Query\Expression|string|array $first
              * @param string|null $operator
              * @param string|null $second
              * @return \Illuminate\Database\Query\Builder 
@@ -20333,6 +20445,60 @@ namespace  {
             {
                                 /** @var \Illuminate\Database\Query\Builder $instance */
                                 return $instance->orWhereFullText($columns, $value, $options);
+            }
+                            /**
+             * Add a "where" clause to the query for multiple columns with "and" conditions between them.
+             *
+             * @param string[] $columns
+             * @param mixed $operator
+             * @param mixed $value
+             * @param string $boolean
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function whereAll($columns, $operator = null, $value = null, $boolean = 'and')
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->whereAll($columns, $operator, $value, $boolean);
+            }
+                            /**
+             * Add an "or where" clause to the query for multiple columns with "and" conditions between them.
+             *
+             * @param string[] $columns
+             * @param string $operator
+             * @param mixed $value
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function orWhereAll($columns, $operator = null, $value = null)
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->orWhereAll($columns, $operator, $value);
+            }
+                            /**
+             * Add an "where" clause to the query for multiple columns with "or" conditions between them.
+             *
+             * @param string[] $columns
+             * @param string $operator
+             * @param mixed $value
+             * @param string $boolean
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function whereAny($columns, $operator = null, $value = null, $boolean = 'and')
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->whereAny($columns, $operator, $value, $boolean);
+            }
+                            /**
+             * Add an "or where" clause to the query for multiple columns with "or" conditions between them.
+             *
+             * @param string[] $columns
+             * @param string $operator
+             * @param mixed $value
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */            public static function orWhereAny($columns, $operator = null, $value = null)
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->orWhereAny($columns, $operator, $value);
             }
                             /**
              * Add a "group by" clause to the query.
@@ -21290,6 +21456,7 @@ namespace  {
             class View extends \Illuminate\Support\Facades\View {}
             class Vite extends \Illuminate\Support\Facades\Vite {}
             class Telegram extends \Telegram\Bot\Laravel\Facades\Telegram {}
+            class GoogleCalendar extends \Spatie\GoogleCalendar\GoogleCalendarFacade {}
             class Flare extends \Spatie\LaravelIgnition\Facades\Flare {}
     }
 

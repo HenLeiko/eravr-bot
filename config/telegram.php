@@ -1,7 +1,9 @@
 <?php
 
+use App\Telegram\Command\CountEventCommand;
 use App\Telegram\Command\CreateCertCommand;
 use App\Telegram\Command\CreateInviteCommand;
+use App\Telegram\Command\DebuginfoCommand;
 use App\Telegram\Command\StartCommand;
 use Telegram\Bot\Commands\HelpCommand;
 
@@ -34,15 +36,34 @@ return [
     |             ]
     */
     'bots' => [
-        'mybot' => [
-            'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
+        'eravrsmm' => [
+            'token' => env('TELEGRAM_BOT_TOKEN_ONE', 'YOUR-BOT-TOKEN'),
             'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
+            'webhook_url' => env('TELEGRAM_WEBHOOK_URL_ONE', 'YOUR-BOT-WEBHOOK-URL'),
             'commands' => [
                 StartCommand::class,
                 CreateInviteCommand::class,
                 CreateCertCommand::class,
+                DebuginfoCommand::class,
+//                CountEventCommand::class,
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
+            ],
+            'command_mapping' => [
+                'создать приглашение' => 'create_invite',
+                'создать сертификат' => 'create_cert',
+            ],
+        ],
+        'eravrgift' => [
+            'token' => env('TELEGRAM_BOT_TOKEN_TWO', 'YOUR-BOT-TOKEN'),
+            'webhook_url' => env('TELEGRAM_WEBHOOK_URL_TWO', 'YOUR-WEBHOOK-URL'),
+            'commands' => [
+                \App\Telegram\Command\SecondStartCommand::class,
+                DebuginfoCommand::class,
+            ],
+            'command_mapping' => [
+                'создать пост' => 'create_post',
+                '/start' => '/start',
+                'дебаг' => 'debuginfo',
             ],
         ],
 
@@ -60,7 +81,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default' => 'mybot',
+    'default' => 'eravrsmm',
 
     /*
     |--------------------------------------------------------------------------
