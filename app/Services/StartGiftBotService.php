@@ -25,12 +25,12 @@ class StartGiftBotService
                 'is_participating' => false,
             ]
         );
-        if ($referrer) {
+        if ($referrer && $telegramChannelMember->ref_code !== $referrer->ref_code && !empty($referrer->id)) {
             $telegramChannelMember->ref_by = $referrer->id;
             $telegramChannelMember->save();
         }
 //        TODO: доделать проверки
-        if ($channelMemberInfo == 'member' || $telegramChannelMember == 'owner' || $telegramChannelMember == 'administrator') {
+        if ($channelMemberInfo == 'member' || $telegramChannelMember == 'administrator') {
             $telegramChannelMember->update(['status' => $channelMemberInfo->status]);
             $telegramChannelMember->save();
         }
