@@ -43,7 +43,6 @@ class MessageHandler implements HandlerInterface
             $chatId = $message->chat->id;
             if ($command) {
                 $commandService = $this->commandFactory->getServiceFromCommand($command);
-
                 if ($commandService) {
                     $commandService->start($this->bot, $userId, $chatId, $message);
                 } else {
@@ -58,6 +57,7 @@ class MessageHandler implements HandlerInterface
                     $service = $this->commandFactory->getServiceFromCommand($stateCommand);
                     if ($service) {
                         $service->handle($this->bot, $userId, $chatId, $message);
+
                     }
                 } else {
                     $this->getResponse($chatId, 'Команды не существует и никаких шагов не запущенно');
