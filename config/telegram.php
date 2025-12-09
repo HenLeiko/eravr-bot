@@ -64,6 +64,7 @@ return [
                 'создать пост' => 'create_post',
                 '/start' => '/start',
                 'дебаг' => 'debuginfo',
+                'Выбрать победителя' => 'rand_winner'
             ],
         ],
 

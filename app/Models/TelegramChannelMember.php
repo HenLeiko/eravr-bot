@@ -81,4 +81,14 @@ class TelegramChannelMember extends Model
         } while (self::where('ref_code', $code)->exists());
         return $code;
     }
+
+    public function scopeCanParticipate($query)
+    {
+        return $query
+            ->where('is_participating', 1)
+            ->where(function ($q) {
+                $q->whereNull('timeout')
+                ->orWhere('timeout', '<', now());
+            });
+    }
 }
