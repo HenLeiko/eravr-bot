@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('user_states', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->string('state');
-            $table->string('command');
-            $table->json('data');
+            $table->string('user_id')->unsigned()->comment('ID телеграма пользователя');;
+            $table->string('username')->nullable()->comment('Никнейм телеграм пользователя');
+            $table->string('full_name')->nullable()->comment('Имя телеграм пользователя');
+            $table->foreignId('access_level_id')->constrained('access_levels')->cascadeOnUpdate()
+                ->comment('ID уровня доступа');
+            $table->string('state')->nullable()->comment('Статус пользователя');
+            $table->string('command')->nullable()->comment('Активная команда');
+            $table->json('data')->nullable()->comment('json стейт для команд');
             $table->timestamps();
         });
     }
