@@ -12,7 +12,7 @@ class CommandFactoryService
      * @param string $command
      * @return string|Application|CertService|null
      */
-    public function getServiceFromCommand(string $command): string|Application|null|CertService|InviteService|CreatePostService|StartGiftBotService|GetRandomWinner
+    public function getServiceFromCommand(string $command): string|Application|null|CertService|InviteService|CreatePostService|StartGiftBotService|GetRandomWinner|WorkHandleService
     {
         return match ($command) {
             'create_cert' => app(CertService::class),
@@ -21,6 +21,7 @@ class CommandFactoryService
             'count_calendar_events' => app(CountCalendarEventsService::class),
             '/start' => app(StartGiftBotService::class),
             'rand_winner' => app(GetRandomWinner::class),
+            'switch_status' => app(WorkHandleService::class),
 //            'debuginfo' => app(DebuginfoService::class),
             default => null,
         };

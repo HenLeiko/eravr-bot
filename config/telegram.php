@@ -51,6 +51,7 @@ return [
             'command_mapping' => [
                 'создать приглашение' => 'create_invite',
                 'создать сертификат' => 'create_cert',
+                'Открыть смену' => 'switch_status',
             ],
         ],
         'eravrgift' => [
@@ -64,7 +65,7 @@ return [
                 'создать пост' => 'create_post',
                 '/start' => '/start',
                 'дебаг' => 'debuginfo',
-                'Выбрать победителя' => 'rand_winner'
+                'Выбрать победителя' => 'rand_winner',
             ],
         ],
 
