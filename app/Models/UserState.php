@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\UserState
@@ -24,12 +25,24 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereState($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereUserId($value)
+ * @property string|null $username Никнейм телеграм пользователя
+ * @property string|null $full_name Имя телеграм пользователя
+ * @property int $access_level_id
+ * @property-read \App\Models\Access_levels $accessLevel
+ * @method static \Illuminate\Database\Eloquent\Builder|UserState whereAccessLevelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserState whereFullName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserState whereUsername($value)
  * @mixin \Eloquent
  */
 class UserState extends Model
 {
-    protected $fillable = ['user_id', 'state', 'command', 'data'];
+    protected $fillable = ['user_id', 'state', 'command', 'data', 'access_level_id', 'full_name'];
     protected $casts = [
         'data' => 'array'
     ];
+
+    public function accessLevel(): BelongsTo
+    {
+        return $this->belongsTo(Access_levels::class, 'access_level_id');
+    }
 }

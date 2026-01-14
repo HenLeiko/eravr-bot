@@ -34,6 +34,9 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember whereTimeout($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, TelegramChannelMember> $referrals
+ * @property-read int|null $referrals_count
+ * @method static \Illuminate\Database\Eloquent\Builder|TelegramChannelMember canParticipate()
  * @mixin \Eloquent
  */
 class TelegramChannelMember extends Model
