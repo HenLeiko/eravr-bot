@@ -32,13 +32,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereAccessLevelId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereFullName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserState whereUsername($value)
+ * @property array|null $step Раздел маркап меню
+ * @method static \Illuminate\Database\Eloquent\Builder|UserState whereStep($value)
  * @mixin \Eloquent
  */
 class UserState extends Model
 {
-    protected $fillable = ['user_id', 'state', 'command', 'data', 'access_level_id', 'full_name'];
+    protected $fillable = ['user_id', 'state', 'command', 'data', 'access_level_id', 'step', 'full_name'];
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
+        'step' => 'array'
     ];
 
     public function accessLevel(): BelongsTo
