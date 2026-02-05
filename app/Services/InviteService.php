@@ -36,6 +36,7 @@ class InviteService
                 'user_id' => $userId,
                 'command' => 'create_invite',
                 'state' => 'set_club',
+                'access_level_id' => 1,
                 'data' => [
                     'club' => '',
                     'title' => '',

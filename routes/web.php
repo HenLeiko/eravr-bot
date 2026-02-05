@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Google\CalendarWatchController;
+use App\Http\Controllers\Google\CalendarWebhookController;
+use App\Http\Controllers\Google\GoogleOAuthController;
+use App\Http\Controllers\TinkoffWebhookController;
 use App\Http\Controllers\WebhookController;
 use DigitalStars\Sheets\DSheets;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +25,14 @@ Route::get('/', function () {
 });
 
 Route::post('/webhook/{botName}', WebhookController::class);
-
+Route::get('/sendTestMesaage', function () {
+    Telegram::bot('eravrsmm')->sendMessage([
+        'chat_id' => '-1002402724986',
+        'message_thread_id' => '3',
+        'text' => 'Тестовое сообщение!'
+    ]);
+});
+Route::post('/tinkoff/webhook', [TinkoffWebhookController::class, 'handle']);
 
 ///
 Route::get('/eravr', function (Request $request) {
@@ -34,4 +45,8 @@ Route::get('/eravr', function (Request $request) {
 
 });
 
+Route::get('/google/oauth', [GoogleOauthController::class, 'redirectGoogle']);
+Route::get('/google/oauth/callback', [GoogleOauthController::class, 'callbackGoogle'])->name('google.oauth.callback');
+Route::post('/google/calendar/watch', [CalendarWatchController::class, 'init'])->name('google.calendar.init');
+Route::post('/google/calendar/webhook', [CalendarWebhookController::class, 'handle'])->name('google.calendar.webhook');
 //require __DIR__.'/auth.php';

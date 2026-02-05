@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('google_calendar_syncs', function (Blueprint $table) {
             $table->id();
             $table->string('calendar_id')->comment('id календаря');
-            $table->string('sync_token')->comment('Токен синхронизации Эвентов');
+            $table->string('sync_token')->nullable()->comment('Токен синхронизации Эвентов');
             $table->string('channel_id')->comment('id канала нотиф вебхука');
             $table->string('resource_id')->comment('id ресурса от гугла');
             $table->dateTime('channel_expiration')->comment('Дата-время смерти вебхука');

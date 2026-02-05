@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Google_Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use RuntimeException;
 
 class GoogleCalendarClient
 {
@@ -18,11 +19,11 @@ class GoogleCalendarClient
         $client->setRedirectUri(config('services.google.redirect_uri'));
 
         $client->setScopes([
-            'https://www.googleapis.com/auth/calendar.events'
+            'https://www.googleapis.com/auth/calendar.events',
+            'https://www.googleapis.com/auth/calendar'
         ]);
 
         $client->setAccessType('offline');
-        $client->setPrompt('consent'); // возможны ошибки и желательно убрать
         $token = $this->getTokenFromDb();
         $client->setAccessToken([
             'access_token' => $token->access_token,
@@ -33,7 +34,7 @@ class GoogleCalendarClient
         if ($client->isAccessTokenExpired()) {
             $newToken = $client->fetchAccessTokenWithRefreshToken($token->refresh_token);
             if (!isset($newToken['access_token'])) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'Google Client access token could not be generated. ' . json_encode($newToken)
                 );
             }

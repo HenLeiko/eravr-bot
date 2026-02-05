@@ -13,6 +13,9 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         '/webhook',
-        '/webhook/*'
+        '/webhook/*',
+        'google/calendar/watch',
+        'google/calendar/webhook',
+        'tinkoff/webhook',
     ];
 }

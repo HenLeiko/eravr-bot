@@ -126,6 +126,13 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'tinkoff' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/tinkoff.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
     ],
 
 ];

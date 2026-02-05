@@ -5,6 +5,8 @@ namespace App\Telegram\Handlers;
 use App\Models\TelegramChannelMember;
 use App\Models\UserState;
 use App\Services\CommandFactoryService;
+use App\Services\MenuService;
+use App\Support\Telegram\ReplyMarkupBuilder;
 use App\Telegram\Interfaces\HandlerInterface;
 use Telegram\Bot\Api;
 
@@ -41,6 +43,20 @@ class MessageHandler implements HandlerInterface
             $command = $this->getCommandFromMapping($message);
             $userId = $message->from->id;
             $chatId = $message->chat->id;
+
+            $userState = UserState::where('user_id', '=', $userId)->first();
+            $menuService = app(MenuService::class);
+            $menuStep = $menuService->getCurrentMenu($userState);
+            if (isset($menuStep[$message->text])) {
+                $result = $menuService->navigate($userState, $message->text);
+                $buttons = $result['options'] ?? [];
+                $this->bot->sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => 's',
+                    'reply_markup' => ReplyMarkupBuilder::create($result,1)
+                ]);
+            }
+
             if ($command) {
                 $commandService = $this->commandFactory->getServiceFromCommand($command);
                 if ($commandService) {
