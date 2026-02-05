@@ -49,6 +49,8 @@ return [
                 //Acme\Project\Commands\MyTelegramBot\BotCommand::class
             ],
             'command_mapping' => [
+                '/start' => 'set_start',
+                'start' => 'set_start',
                 'создать приглашение' => 'create_invite',
                 'создать сертификат' => 'create_cert',
                 'Открыть смену' => 'switch_status',

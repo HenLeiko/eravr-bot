@@ -38,7 +38,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserState extends Model
 {
-    protected $fillable = ['user_id', 'state', 'command', 'data', 'access_level_id', 'step', 'full_name'];
+    protected $fillable = ['user_id', 'state', 'command', 'data', 'access_level_id', 'step', 'full_name',
+        'username'
+    ];
     protected $casts = [
         'data' => 'array',
         'step' => 'array'

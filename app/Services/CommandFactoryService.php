@@ -15,6 +15,7 @@ class CommandFactoryService
     public function getServiceFromCommand(string $command): string|Application|null|CertService|InviteService|CreatePostService|StartGiftBotService|GetRandomWinner|WorkHandleService
     {
         return match ($command) {
+            'start' => app(StartSmmService::class),
             'create_cert' => app(CertService::class),
             'create_invite' => app(InviteService::class),
             'create_post' => app(CreatePostService::class),
